@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&display=swap');
+
+* {
+  color: #fff;
+  font-family: 'Work Sans', sans-serif;
+}
+
+.container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #303030;
+  width: 50%;
+  height: 50%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  background: #808080;
+}
+
+.header-item {
+  margin: 20px;
+}
+
+#player-name {
+  font-size: 18px;
+}
+
+#player-balance {
+  font-size: 18px;
+}
+
+.wrapper {
+  margin-top: 6em;
+  width: 100%;
+  text-align: center;
+}
+
+.fucking-quote {
+  margin-top: -3em;
+  margin-bottom: 4em;
+}
+
+.action-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-grid {
+  display: flex;
+  margin: 10px;
+}
+
+.action-button {
+  margin: 10px;
+  border: none;
+  font-size: 18px;
+  outline: none;
+  cursor: pointer;
+  background: #fff;
+  color: #4f4f4f;
+  font-weight: 500;
+  border-radius: 5px;
+  padding: 10px 20px;
+}
+
+.input-section {
+  width: 100%;
+  margin-bottom: 4em;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+#input-amount {
+  outline: none;
+  border-radius: 5px;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  color: #808080;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+#playerid {
+  outline: none;
+  border-radius: 5px;
+  border: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  text-align: center;
+  color: #808080;
+  font-weight: 600;
+}
+
+#input-amount::placeholder {
+  color: #808080;
+  font-weight: 600;
+}
+
+.transfer-modal {
+  background: #1b1b1b;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 50%;
+  top: 55%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 60%;
+  visibility: hidden;
+}
+
+.modal-con {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#close-transfer {
+  background: #c62828;
+  color: #fff;
+}
+
+
+#action-feedback {
+  margin-top: -20px;
+}

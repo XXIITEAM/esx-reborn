@@ -1,0 +1,7 @@
+node_modules
+
+# Remove IDE Specific Folders
+.idea
+
+modules/__user__/*
+!modules/__user__/.gitkeep

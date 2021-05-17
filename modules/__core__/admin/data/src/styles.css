@@ -1,0 +1,8 @@
+.white {
+    color: white;
+}
+
+.tab-pane-dark {
+    background-color:rgba(60, 60, 60, 0.8) !important;
+    border-color: black !important;
+}

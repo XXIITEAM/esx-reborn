@@ -1,0 +1,452 @@
+@font-face {
+    font-family: ChaletLondon;
+    src: url('../fonts/coolvetica.ttf');
+}
+
+@font-face {
+    font-family: Montserrat-Bold;
+    src: url('../fonts/Montserrat-Bold.ttf');
+}
+
+@font-face {
+    font-family: Montserrat-Regular;
+    src: url('../fonts/Montserrat-Regular.ttf');
+}
+
+html {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    user-select: none;
+}
+
+body {
+    position: absolute;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
+.skn_left {
+    left: 2.5vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+}
+
+.skin {
+    position: absolute;
+    font-family: Montserrat-Bold;
+    letter-spacing: 1px;
+    margin-top: 2.5vh;
+    height: 95vh;
+    width: 25%;
+    color: white;
+    z-index: 500;
+}
+
+.skn_right {
+    right: 2.5vh;
+    border-radius: 15px;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.skin_head {
+    padding: 20px;
+    position: relative;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.skin_head_left {
+    display: inline-block;
+    width: 30%;
+    text-transform: uppercase;
+}
+
+.skin_head_left span,
+.skin_head_left label {
+    display: inline-block;
+    width: 100%;
+}
+
+.skin_head_left label {
+    font-size: 2vw;
+    font-weight: bold;
+    text-align: left;
+}
+
+.skin_head_right {
+    display: inline-block;
+    width: 100%;
+    text-transform: uppercase;
+}
+
+.skin_head_right span,
+.skin_head_right label {
+    display: inline-block;
+    width: 100%;
+    text-align: right;
+}
+
+.skin_head_right label {
+    font-size: 2vw;
+    font-weight: bold;
+    text-align: right;
+}
+
+.skin_isset.isset {
+    opacity: 0.8;
+}
+
+.skin_isset.isnotset {
+    opacity: 0.2;
+    text-shadow: 0 0 3px #333;
+}
+
+.skin_isset {
+    float: right;
+    width: 4.5vw;
+    position: relative;
+    text-align: center;
+}
+
+.skin_isset img {
+    width: 3.2vw;
+    height: 3.2vw;
+}
+
+.skin_isset label {
+    font-size: 10px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+
+.skin_isset_icon_big {
+    font-size: 2.2vw !important;
+    width: 100%;
+}
+
+.skin_isset_icon_small {
+    position: absolute;
+    font-size: 16px !important;
+    top: 65%;
+    right: 24%;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+}
+
+.skin_content {
+    backface-visibility: hidden;
+}
+
+#skin_bottom {
+    margin: 0;
+    justify-content: center;
+    position: absolute;
+    left: 30.0%;
+    width: 40%;
+    height: 75px;
+    bottom: 2.5vh;
+}
+
+#skin_content {
+    width: 60%;
+    padding: 10% 20% 3%;
+    margin: 0 auto;
+    position: absolute;
+    bottom: 0;
+    z-index: 101;
+}
+
+.skn_confirm {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-family: Montserrat-Bold;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.8);
+    text-align: center;
+    z-index: 110;
+    border-radius: 10px;
+}
+
+.skn_confirm:hover {
+    background-color: rgba(50, 50, 50, 0.8);
+}
+
+.skn_confirm:active {
+    background-color: rgba(65, 65, 65, 0.8);
+}
+
+.skn_confirm:after {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.skn_confirm span {
+    font-family: Montserrat-Bold;
+}
+
+.skn_confirm span,
+.skn_confirm i {
+    justify-content: center;
+    font-size: 2em;
+}
+
+.left_menus,
+.right_menus {
+    display: table;
+    width: 100%;
+}
+
+.left_menu,
+.right_menu {
+    display: table-cell;
+    width: 2.8vw;
+    position: relative;
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px;
+}
+
+.left_menu.active,
+.right_menu.active {
+    background-color: rgba(100, 100, 100, 0.8);
+}
+
+.left_menu:first-child,
+.right_menu:first-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.left_menu img,
+.right_menu img {
+    width: 2.6vw;
+    height: 2.6vw;
+}
+
+.left_menu i,
+.right_menu i {
+    width: 100%;
+    padding: 12px 0 0.2vw;
+    font-size: 1.5vw;
+}
+
+.left_menu_label,
+.right_menu_label {
+    font-family: Montserrat-Bold;
+    text-transform: uppercase;
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0px 0;
+}
+
+.left_menu label,
+.right_menu label {
+    font-family: ChaletLondon;
+    font-size: 0.6em;
+    text-transform: uppercase;
+}
+
+.left_content ul,
+.right_content ul {
+    padding: 0;
+    margin: 0;
+}
+
+.left_content,
+.right_content {
+    margin-top: 5px;
+}
+
+.left_content ul li,
+.right_content ul li {
+    list-style-type: none;
+}
+
+.range {
+    display: table;
+    position: relative;
+    height: 10px;
+    margin: 10px;
+    background-color: rgba(245, 245, 245, 0.2);
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.range input[type="range"] {
+    margin: 0;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    display: table-cell;
+    width: 100%;
+    background-color: rgba(120, 120, 120, 0.8);
+    height: 20px;
+    cursor: pointer;
+    transition: all ease-in 0.25s;
+}
+
+.range input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    width: 11px;
+    height: 20px;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.range output {
+    display: table-cell;
+    min-width: 40px;
+    color: rgb(255, 255, 255);
+    background-color: rgba(175, 175, 175, 0.8);
+    text-align: center;
+    text-decoration: none;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle;
+    transition: all 0.5s ease;
+    user-select: none;
+}
+
+.range input[type="range"] {
+    outline: none;
+}
+
+.range .color-select {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: black;
+}
+
+#eyeColor {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: none;
+    justify-content: center;
+}
+
+#eyebrowColor {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: none;
+    justify-content: center;
+}
+
+#blushColor {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: none;
+    justify-content: center;
+}
+
+#hairColor {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: none;
+    justify-content: center;
+}
+
+#hairHighlightColor {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: none;
+    justify-content: center;
+}
+
+#lipstickColor {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: none;
+    justify-content: center;
+}
+
+#beardColor {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: none;
+    justify-content: center;
+}
+
+#chesthairColor {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: none;
+    justify-content: center;
+}
+
+.color-picker {
+    display: table;
+    position: relative;
+    margin-left: 10px;
+    background-color: rgba(245, 245, 245, 0.2);
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.color-picker .radiocolor {
+    height: 25px;
+    width: 25px;
+}
+
+.color-picker .radiocolor input[type="radio"]+label {
+    display: inline-block;
+    position: absolute;
+    width: 2vh;
+    height: 2vh;
+    margin-left: 0.08vw;
+    margin-bottom: 0.08vw;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 0.15vh solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.color-picker .radiocolor input[type="radio"]:checked+label {
+    border: 0.15vh solid rgba(255, 255, 255, 1.0);
+}
+
+.color-picker .radiocolor input[type="radio"]:not(:checked)+label:hover {
+    border: 0.15vh solid rgba(255, 255, 255, 0.5);
+}
+
+.color-picker .radiocolor input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}

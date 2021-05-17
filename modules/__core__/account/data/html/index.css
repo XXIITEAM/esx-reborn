@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap');
+@font-face {
+    font-family: 'Pricedown';
+    src: url('pdown.ttf')
+}
+
+* {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.wallet-container {
+    position: absolute;
+    right: 1.38%;
+    top: 6.55%;
+    background-color: rgba(0, 0, 0, 0);
+    width: 350px;
+    height: 300px;
+}
+
+.wallet-amount {
+    color: #2ecc71;
+    font-family: 'Pricedown';
+    font-size: 35px;
+    text-align: right;
+    vertical-align: top;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    margin: 1px;
+    margin-bottom: 1px;
+    line-height: 35px;
+}
+
+.fleeca-amount {
+    color: #27ae60;
+    font-family: 'Pricedown';
+    font-size: 35px;
+    text-align: right;
+    vertical-align: top;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    margin: 1px;
+    margin-bottom: 1px;
+    line-height: 35px;
+}
+
+.maze-amount {
+    color: #16a085;
+    font-family: 'Pricedown';
+    font-size: 35px;
+    text-align: right;
+    vertical-align: top;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    margin: 1px;
+    margin-bottom: 1px;
+    line-height: 35px;
+}

@@ -1,0 +1,32 @@
+{
+  "name": "esx-reborn",
+  "version": "2.0.1",
+  "description": "```\r # minimum resources and config to get it working",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ESX-Org/esx-reborn.git"
+  },
+  "keywords": [
+    "esx"
+  ],
+  "author": "The ESX Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/ESX-Org/esx-reborn/issues"
+  },
+  "homepage": "https://github.com/ESX-Org/esx-reborn#readme",
+  "devDependencies": {},
+  "dependencies": {
+    "fengari": "^0.1.4",
+    "fengari-interop": "^0.1.2",
+    "glob": "^7.1.6",
+    "minimatch": "^3.0.4"
+  }
+}

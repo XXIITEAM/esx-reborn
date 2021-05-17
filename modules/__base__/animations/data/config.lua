@@ -1,0 +1,136 @@
+-- Copyright (c) Jérémie N'gadi
+--
+-- All rights reserved.
+--
+-- Even if 'All rights reserved' is very clear :
+--
+--   You shall not use any piece of this software in a commercial product / service
+--   You shall not resell this software
+--   You shall not provide any facility to install this particular software in a commercial product / service
+--   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
+--   This copyright should appear in every part of the project code
+
+Config = {}
+Config.OpenMenuKey   = 288 -- F1
+Config.CancelAnimKey = 73  -- X
+
+Config.Animations = {
+	festives = {
+		{name = "smoke_cigarette", type = "scenario", data = {anim = "WORLD_HUMAN_SMOKING"}},
+		{name = "play_music", type = "scenario", data = {anim = "WORLD_HUMAN_MUSICIAN"}},
+		{name = "dj", type = "anim", data = {lib = "anim@mp_player_intcelebrationmale@dj", anim = "dj"}},
+		{name = "drink_a_beer", type = "scenario", data = {anim = "WORLD_HUMAN_DRINKING"}},
+		{name = "party", type = "scenario", data = {anim = "WORLD_HUMAN_PARTYING"}},
+		{name = "air_guitar", type = "anim", data = {lib = "anim@mp_player_intcelebrationmale@air_guitar", anim = "air_guitar"}},
+		{name = "air_shagging", type = "anim", data = {lib = "anim@mp_player_intcelebrationfemale@air_shagging", anim = "air_shagging"}},
+		{name = "rock_n_roll", type = "anim", data = {lib = "mp_player_int_upperrock", anim = "mp_player_int_rock"}},
+		-- {name = "Fumer un joint", type = "scenario", data = {anim = "WORLD_HUMAN_SMOKING_POT"}},
+		{name = "drunk_idle", type = "anim", data = {lib = "amb@world_human_bum_standing@drunk@idle_a", anim = "idle_a"}},
+		{name = "vomit_outside", type = "anim", data = {lib = "oddjobs@taxi@tie", anim = "vomit_outside"}},
+	},
+	greetings = {
+		{name = "greet", type = "anim", data = {lib = "gestures@m@standing@casual", anim = "gesture_hello"}},
+		{name = "shake_hands", type = "anim", data = {lib = "mp_common", anim = "givetake1_a"}},
+		{name = "handshake", type = "anim", data = {lib = "mp_ped_interaction", anim = "handshake_guy_a"}},
+		{name = "hug", type = "anim", data = {lib = "mp_ped_interaction", anim = "hugs_guy_a"}},
+		{name = "salute", type = "anim", data = {lib = "mp_player_int_uppersalute", anim = "mp_player_int_salute"}},
+	},
+	work = {
+		{name = "suspect_surrender", type = "anim", data = {lib = "random@arrests@busted", anim = "idle_c"}},
+		{name = "fishing", type = "scenario", data = {anim = "world_human_stand_fishing"}},
+		{name = "police_investigate", type = "anim", data = {lib = "amb@code_human_police_investigate@idle_b", anim = "idle_f"}},
+		{name = "police_talk_on_radio", type = "anim", data = {lib = "random@arrests", anim = "generic_radio_chatter"}},
+		{name = "police_circulation", type = "scenario", data = {anim = "WORLD_HUMAN_CAR_PARK_ATTENDANT"}},
+		{name = "binoculars", type = "scenario", data = {anim = "WORLD_HUMAN_BINOCULARS"}},
+		{name = "agriculture_harvest", type = "scenario", data = {anim = "world_human_gardener_plant"}},
+		{name = "mechanic_repair_engine", type = "anim", data = {lib = "mini@repair", anim = "fixing_a_ped"}},
+		{name = "medical_observe", type = "scenario", data = {anim = "CODE_HUMAN_MEDIC_KNEEL"}},
+		{name = "taxi_talk_to_customer", type = "anim", data = {lib = "oddjobs@taxi@driver", anim = "leanover_idle"}},
+		{name = "taxi_give_invoice", type = "anim", data = {lib = "oddjobs@taxi@cyi", anim = "std_hand_off_ps_passenger"}},
+		{name = "grocer_carry_box", type = "anim", data = {lib = "mp_am_hold_up", anim = "purchase_beerbox_shopkeeper"}},
+		{name = "bartender_serve_shot", type = "anim", data = {lib = "mini@drinking", anim = "shots_barman_b"}},
+		{name = "journalist_take_photo", type = "scenario", data = {anim = "WORLD_HUMAN_PAPARAZZI"}},
+		{name = "journalist_take_notes", type = "scenario", data = {anim = "WORLD_HUMAN_CLIPBOARD"}},
+		{name = "carpenter_hammering", type = "scenario", data = {anim = "WORLD_HUMAN_HAMMERING"}},
+		{name = "prostitute_freeway", type = "scenario", data = {anim = "WORLD_HUMAN_BUM_FREEWAY"}},
+		{name = "prostitute_statue", type = "scenario", data = {anim = "WORLD_HUMAN_HUMAN_STATUE"}},
+	},
+  emotions = {
+		{name = "cheer", type = "scenario", data = {anim = "WORLD_HUMAN_CHEERING"}},
+		{name = "thank", type = "anim", data = {lib = "mp_action", anim = "thanks_male_06"}},
+		{name = "point", type = "anim", data = {lib = "gestures@m@standing@casual", anim = "gesture_point"}},
+		{name = "come_here", type = "anim", data = {lib = "gestures@m@standing@casual", anim = "gesture_come_here_soft"}}, 
+		{name = "bring_it_on", type = "anim", data = {lib = "gestures@m@standing@casual", anim = "gesture_bring_it_on"}},
+		{name = "me", type = "anim", data = {lib = "gestures@m@standing@casual", anim = "gesture_me"}},
+		{name = "i_knew_it", type = "anim", data = {lib = "anim@am_hold_up@male", anim = "shoplift_high"}},
+		{name = "exhaustion", type = "scenario", data = {lib = "amb@world_human_jog_standing@male@idle_b", anim = "idle_d"}},
+		{name = "depressed", type = "scenario", data = {lib = "amb@world_human_bum_standing@depressed@idle_a", anim = "idle_a"}},
+		{name = "facepalm", type = "anim", data = {lib = "anim@mp_player_intcelebrationmale@face_palm", anim = "face_palm"}},
+		{name = "calm_down", type = "anim", data = {lib = "gestures@m@standing@casual", anim = "gesture_easy_now"}},
+		{name = "what_did_i_do", type = "anim", data = {lib = "oddjobs@assassinate@multi@", anim = "react_big_variations_a"}},
+		{name = "cower", type = "anim", data = {lib = "amb@code_human_cower_stand@male@react_cowering", anim = "base_right"}},
+		{name = "fight_me", type = "anim", data = {lib = "anim@deathmatch_intros@unarmed", anim = "intro_male_unarmed_e"}},
+		{name = "disappointment", type = "anim", data = {lib = "gestures@m@standing@casual", anim = "gesture_damn"}},
+		{name = "kiss", type = "anim", data = {lib = "mp_ped_interaction", anim = "kisses_guy_a"}},
+		{name = "middle_finger", type = "anim", data = {lib = "mp_player_int_upperfinger", anim = "mp_player_int_finger_01_enter"}},
+		{name = "wank", type = "anim", data = {lib = "mp_player_int_upperwank", anim = "mp_player_int_wank_01"}},
+		{name = "suicidal", type = "anim", data = {lib = "mp_suicide", anim = "pistol"}},
+	},
+  sports = {
+		{name = "show_off_muscles", type = "anim", data = {lib = "amb@world_human_muscle_flex@arms_at_side@base", anim = "base"}},
+		{name = "weightlifting_bar", type = "anim", data = {lib = "amb@world_human_muscle_free_weights@male@barbell@base", anim = "base"}},
+		{name = "push_ups", type = "anim", data = {lib = "amb@world_human_push_ups@male@base", anim = "base"}},
+		{name = "sit_ups", type = "anim", data = {lib = "amb@world_human_sit_ups@male@base", anim = "base"}},
+		{name = "yoga", type = "anim", data = {lib = "amb@world_human_yoga@male@base", anim = "base_a"}},
+	},
+  miscellaneous = {
+		{name = "drink_coffee", type = "anim", data = {lib = "amb@world_human_aa_coffee@idle_a", anim = "idle_a"}},
+		{name = "sit", type = "anim", data = {lib = "anim@heists@prison_heistunfinished_biztarget_idle", anim = "target_idle"}},
+		{name = "lean_against_wall", type = "scenario", data = {anim = "world_human_leaning"}},
+		{name = "lay_on_back", type = "scenario", data = {anim = "WORLD_HUMAN_SUNBATHE_BACK"}},
+		{name = "lay_on_stomach", type = "scenario", data = {anim = "WORLD_HUMAN_SUNBATHE"}},
+		{name = "clean", type = "scenario", data = {anim = "world_human_maid_clean"}},
+		{name = "bbq", type = "scenario", data = {anim = "PROP_HUMAN_BBQ"}},
+		{name = "search_around", type = "anim", data = {lib = "mini@prostitutes@sexlow_veh", anim = "low_car_bj_to_prop_female"}},
+		{name = "take_selfie", type = "scenario", data = {anim = "world_human_tourist_mobile"}},
+		{name = "safe_cracking", type = "anim", data = {lib = "mini@safe_cracking", anim = "idle_base"}}, 
+	},
+	attitudes = {
+		{name = "confident", type = "attitude", data = {lib = "move_m@confident", anim = "move_m@confident"}},
+		{name = "heels", type = "attitude", data = {lib = "move_f@heels@c", anim = "move_f@heels@c"}},
+		{name = "depressed_m", type = "attitude", data = {lib = "move_m@depressed@a", anim = "move_m@depressed@a"}},
+		{name = "depressed_f", type = "attitude", data = {lib = "move_f@depressed@a", anim = "move_f@depressed@a"}},
+		{name = "business", type = "attitude", data = {lib = "move_m@business@a", anim = "move_m@business@a"}},
+		{name = "brave", type = "attitude", data = {lib = "move_m@brave@a", anim = "move_m@brave@a"}},
+		{name = "casual", type = "attitude", data = {lib = "move_m@casual@a", anim = "move_m@casual@a"}},
+		{name = "fat", type = "attitude", data = {lib = "move_m@fat@a", anim = "move_m@fat@a"}},
+		{name = "hipster", type = "attitude", data = {lib = "move_m@hipster@a", anim = "move_m@hipster@a"}},
+		{name = "injured", type = "attitude", data = {lib = "move_m@injured", anim = "move_m@injured"}},
+		{name = "hurry", type = "attitude", data = {lib = "move_m@hurry@a", anim = "move_m@hurry@a"}},
+		{name = "hobo", type = "attitude", data = {lib = "move_m@hobo@a", anim = "move_m@hobo@a"}},
+		{name = "sad", type = "attitude", data = {lib = "move_m@sad@a", anim = "move_m@sad@a"}},
+		{name = "muscle", type = "attitude", data = {lib = "move_m@muscle@a", anim = "move_m@muscle@a"}},
+		{name = "shocked", type = "attitude", data = {lib = "move_m@shocked@a", anim = "move_m@shocked@a"}},
+		{name = "shady", type = "attitude", data = {lib = "move_m@shadyped@a", anim = "move_m@shadyped@a"}},
+		{name = "buzzed", type = "attitude", data = {lib = "move_m@buzzed", anim = "move_m@buzzed"}},
+		{name = "hurry_butch", type = "attitude", data = {lib = "move_m@hurry_butch@a", anim = "move_m@hurry_butch@a"}},
+		{name = "money", type = "attitude", data = {lib = "move_m@money", anim = "move_m@money"}},
+		{name = "quick", type = "attitude", data = {lib = "move_m@quick", anim = "move_m@quick"}},
+		{name = "maneater", type = "attitude", data = {lib = "move_f@maneater", anim = "move_f@maneater"}},
+		{name = "sassy", type = "attitude", data = {lib = "move_f@sassy", anim = "move_f@sassy"}},
+		{name = "arrogant", type = "attitude", data = {lib = "move_f@arrogant@a", anim = "move_f@arrogant@a"}},
+	},
+	intimate = {
+		{name = "blowjob_loop_receive", type = "anim", data = {lib = "oddjobs@towing", anim = "m_blow_job_loop"}},
+		{name = "blowjob_loop_give", type = "anim", data = {lib = "oddjobs@towing", anim = "f_blow_job_loop"}},
+		{name = "sexlow_veh_bottom", type = "anim", data = {lib = "mini@prostitutes@sexlow_veh", anim = "low_car_sex_loop_player"}},
+		{name = "sexlow_veh_top", type = "anim", data = {lib = "mini@prostitutes@sexlow_veh", anim = "low_car_sex_loop_female"}},
+		{name = "scratching_balls", type = "anim", data = {lib = "mp_player_int_uppergrab_crotch", anim = "mp_player_int_grab_crotch"}},
+		{name = "stripper_idle", type = "anim", data = {lib = "mini@strip_club@idles@stripper", anim = "stripper_idle_02"}},
+		{name = "prostitute_high_class", type = "scenario", data = {anim = "WORLD_HUMAN_PROSTITUTE_HIGH_CLASS"}},
+		{name = "show_off_chest", type = "anim", data = {lib = "mini@strip_club@backroom@", anim = "stripper_b_backroom_idle_b"}},
+		{name = "striptease_1", type = "anim", data = {lib = "mini@strip_club@lap_dance@ld_girl_a_song_a_p1", anim = "ld_girl_a_song_a_p1_f"}},
+		{name = "striptease_2", type = "anim", data = {lib = "mini@strip_club@private_dance@part2", anim = "priv_dance_p2"}},
+		{name = "private_dance", type = "anim", data = {lib = "mini@strip_club@private_dance@part3", anim = "priv_dance_p3"}},
+	},
+}

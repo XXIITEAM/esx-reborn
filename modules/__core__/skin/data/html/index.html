@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="stylesheet" type="text/css" href="./css/material.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css" />
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+</head>
+
+<body>
+    <div class="skin skn_left" id="skn_left">
+        <div class="skin_head">
+            <div class="skin_head_left">
+                <span>Choose A</span><label>Gender</label>
+            </div>
+            <div class="skin_isset isnotset changeGender" data-value="2">
+                <img src="./images/genderIcon.png">
+            </div>
+            <div class="skin_isset isnotset changeGender" data-value="1">
+                <img src="./images/femaleIcon.png">
+            </div>
+            <div class="skin_isset changeGender" data-value="0">
+                <img src="./images/maleIcon.png">
+            </div>
+        </div>
+        <div class="skin_content">
+            <div class="left_menus">
+                <div class="left_menu active" data-menu="premade">
+                    <label>Premade</label>
+                </div>
+                <div class="left_menu" data-menu="heritage">
+                    <label>Heritage</label>
+                </div>
+                <div class="left_menu" data-menu="eyes">
+                    <label>Eyes</label>
+                </div>
+                <div class="left_menu" data-menu="nose">
+                    <label>Nose</label>
+                </div>
+                <div class="left_menu" data-menu="chin">
+                    <label>Chin|Jaw</label>
+                </div>
+                <div class="left_menu" data-menu="cheeks">
+                    <label>Cheeks</label>
+                </div>
+                <div class="left_menu" data-menu="lips">
+                    <label>Lips</label>
+                </div>
+                <div class="left_menu" data-menu="neck">
+                    <label>Neck</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="left_content" id="left_content">
+            <div id="premade" class="left_submenu">
+                <ul>
+                    <label class="left_menu_label">Ped Model</label>
+                    <li class="range">
+                        <input type="range" min="0" max="45" value="0" step="1" class="slider" data-type="model" id="changeModel" oninput="modelOutput.value=value">
+                        <output id="modelOutput">0</output>
+                    </li>
+                </ul>
+            </div>
+            <div id="heritage" class="left_submenu" style="display:none">
+                <ul>
+                    <label class="left_menu_label">Father's Face</label>
+                    <li class="range">
+                        <input type="range" min="0" max="45" value="0" step="1" class="slider" data-type="component" id="shapeFirstID" oninput="shapeFirstIDOutput.value=value">
+                        <output id="shapeFirstIDOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Father's Ancestry</label>
+                    <li class="range">
+                        <input type="range" min="0" max="45" value="0" step="1" class="slider" data-type="component" id="skinFirstID" oninput="skinFirstIDOutput.value=value">
+                        <output id="skinFirstIDOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Mother's Face</label>
+                    <li class="range">
+                        <input type="range" min="0" max="45" value="0" step="1" class="slider" data-type="component" id="shapeSecondID" oninput="shapeSecondIDOutput.value=value">
+                        <output id="shapeSecondIDOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Mother's Ancestry</label>
+                    <li class="range">
+                        <input type="range" min="0" max="45" value="0" step="1" class="slider" data-type="component" id="skinSecondID" oninput="skinSecondIDOutput.value=value">
+                        <output id="skinSecondIDOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Face Dominant Gene</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0.5" step="0.01" class="slider" data-type="component" id="shapeMix" oninput="shapeMixOutput.value=value">
+                        <output id="shapeMixOutput">0.5</output>
+                    </li>
+                    <label class="left_menu_label">Ancestry Dominant Gene</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0.5" step="0.01" class="slider" data-type="component" id="skinMix" oninput="skinMixOutput.value=value">
+                        <output id="skinMixOutput">0.5</output>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="eyes" class="left_submenu" style="display:none">
+                <ul>
+                    <label class="left_menu_label">Eye State</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="eyeState" oninput="eyeStateOutput.value=value">
+                        <output id="eyeStateOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Eye Color</label>
+                    <li class="color-picker range" id="eyeColor">
+                    </li>
+                    <label class="left_menu_label">Eyebrow</label>
+                    <li class="range">
+                        <input type="range" min="0" max="33" value="1" step="1" class="slider" data-type="component" id="eyebrow" oninput="eyebrowOutput.value=value">
+                        <output id="eyebrowOutput">1</output>
+                    </li>
+                    <label class="left_menu_label">Eyebrow Width</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="eyebrowWidth" oninput="eyebrowWidthOutput.value=value">
+                        <output id="eyebrowWidthOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Eyebrow Shape</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="eyebrowHeight" oninput="eyebrowShapeOutput.value=value">
+                        <output id="eyebrowShapeOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Eyebrow Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0.99" step="0.01" class="slider" data-type="component" id="eyebrowOpacity" oninput="eyebrowOpacityOutput.value=value">
+                        <output id="eyebrowOpacityOutput">0.99</output>
+                    </li>
+                    <label class="right_menu_label">Eyebrow Color</label>
+                    <li class="color-picker range" id="eyebrowColor">
+                    </li>
+                </ul>
+            </div>
+            <div id="nose" class="left_submenu" style="display:none">
+                <ul>
+                    <label class="left_menu_label">Nose Width</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="noseWidth" oninput="noseWidthOutput.value=value">
+                        <output id="noseWidthOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Nose Height</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="noseHeight" oninput="noseHeightOutput.value=value">
+                        <output id="noseHeightOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Nose Length</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="noseLength" oninput="noseLengthOutput.value=value">
+                        <output id="noseLengthOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Nose Bridge</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="noseBridge" oninput="noseBridgeOutput.value=value">
+                        <output id="noseBridgeOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Nose Tip</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="noseTip" oninput="noseTipOutput.value=value">
+                        <output id="noseTipOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Nose Shift</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="noseShift" oninput="noseShiftOutput.value=value">
+                        <output id="noseShiftOutput">0</output>
+                    </li>
+                </ul>
+            </div>
+            <div id="chin" class="left_submenu" style="display:none">
+                <ul>
+                    <label class="left_menu_label">Chin Length</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="chinLength" oninput="chinLengthOutput.value=value">
+                        <output id="chinLengthOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Chin Position</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="chinPosition" oninput="chinPositionOutput.value=value">
+                        <output id="chinPositionOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Chin Width</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="chinWidth" oninput="chinWidthOutput.value=value">
+                        <output id="chinWidthOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Chin Height</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="chinHeight" oninput="chinHeightOutput.value=value">
+                        <output id="chinHeightOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Jaw Width</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="jawWidth" oninput="jawWidthOutput.value=value">
+                        <output id="jawWidthOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Jaw Height</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="jawHeight" oninput="jawHeightOutput.value=value">
+                        <output id="jawHeightOutput">0</output>
+                    </li>
+                </ul>
+            </div>
+            <div id="cheeks" class="left_submenu" style="display:none">
+                <ul>
+                    <label class="left_menu_label">Cheekbone Height</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="cheekboneHeight" oninput="cheekboneHeightOutput.value=value">
+                        <output id="cheekboneHeightOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Cheekbone Width</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="cheekboneWidth" oninput="cheekboneWidthOutput.value=value">
+                        <output id="cheekboneWidthOutput">0</output>
+                    </li>
+                    <label class="left_menu_label">Cheeks Width</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="cheeksWidth" oninput="cheeksWidthOutput.value=value">
+                        <output id="cheekWidthOutput">0</output>
+                    </li>
+            </div>
+            <div id="lips" class="left_submenu" style="display:none">
+                <ul>
+                    <label class="left_menu_label">Lips Width</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="lipsWidth" oninput="lipsWidthOutput.value=value">
+                        <output id="lipsWidthOutput">0</output>
+                    </li>
+            </div>
+            <div id="neck" class="left_submenu" style="display:none">
+                <ul>
+                    <label class="left_menu_label">Neck Thickness</label>
+                    <li class="range">
+                        <input type="range" min="-0.99" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="neckThickness" oninput="neckThicknessOutput.value=value">
+                        <output id="neckThicknessOutput">0</output>
+                    </li>
+            </div>
+        </div>
+    </div>
+    <div id="skin_bottom">
+        <div id="skn_confirm" class="skn_confirm"><span>Confirm</span></div>
+    </div>
+
+    <div class="skin skn_right" id="skn_right">
+        <div class="skin_head">
+            <div class="skin_head_right">
+                <span>Freemode Ped</span><label>Customization</label>
+            </div>
+        </div>
+        <div class="skin_content">
+            <div class="left_menus">
+                <div class="right_menu active" data-menu="face_skin">
+                    <label>Face</label>
+                </div>
+                <div class="right_menu" data-menu="hair">
+                    <label>Hair</label>
+                </div>
+                <div class="right_menu" data-menu="beard">
+                    <label>Beard</label>
+                </div>
+                <div class="right_menu" data-menu="makeup">
+                    <label>Makeup</label>
+                </div>
+                <div class="right_menu" data-menu="aging">
+                    <label>aging</label>
+                </div>
+                <div class="right_menu" data-menu="chest">
+                    <label>Chest</label>
+                </div>
+                <div class="right_menu" data-menu="body">
+                    <label>Body</label>
+                </div>
+            </div>
+        </div>
+        <div class="right_content" id="right_content">
+            <div id="face_skin" class="right_submenu">
+                <ul>
+                    <label class="right_menu_label">Blemishes</label>
+                    <li class="range">
+                        <input type="range" min="0" max="24" value="0" step="1" class="slider" data-type="component" id="blemishes" oninput="blemishesOutput.value=value">
+                        <output id="blemishesOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Blemishes Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0.0" step="0.01" class="slider" data-type="component" id="blemishesOpacity" oninput="blemishesOpacityOutput.value=value">
+                        <output id="blemishesOpacityOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Freckles</label>
+                    <li class="range">
+                        <input type="range" min="0" max="18" value="0" step="1" class="slider" data-type="component" id="freckles" oninput="frecklesOutput.value=value">
+                        <output id="frecklesOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Freckles Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="frecklesOpacity" oninput="frecklesOpacityOutput.value=value">
+                        <output id="frecklesOpacityOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Complexion</label>
+                    <li class="range">
+                        <input type="range" min="0" max="12" value="0" step="1" class="slider" data-type="component" id="complexion" oninput="complexionOutput.value=value">
+                        <output id="complexionOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Complexion Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="complexionOpacity" oninput="complexionOpacityOutput.value=value">
+                        <output id="complexionOpacityOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Blush</label>
+                    <li class="range">
+                        <input type="range" min="0" max="7" value="0" step="1" class="slider" data-type="component" id="blush" oninput="blushOutput.value=value">
+                        <output id="blushOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Blush Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="blushOpacity" oninput="blushOpacityOutput.value=value">
+                        <output id="blushOpacityOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Blush Color</label>
+                    <li class="color-picker range" id="blushColor">
+                    </li>
+                </ul>
+            </div>
+            <div id="hair" class="right_submenu" style="display:none">
+                <ul>
+                    <label class="right_menu_label">Hair</label>
+                    <li class="range">
+                        <input type="range" min="0" max="37" value="2" step="1" class="slider" data-type="component" id="hair" oninput="hairOutput.value=value">
+                        <output id="hairOutput">2</output>
+                    </li>
+                    <label class="right_menu_label">Hair Color</label>
+                    <li class="color-picker range" id="hairColor">
+                    </li>
+                    <label class="right_menu_label">Hair Highlight Color</label>
+                    <li class="color-picker range" id="hairHighlightColor">
+                    </li>
+                </ul>
+            </div>
+            <div id="beard" class="right_submenu" style="display:none">
+                <ul>
+                    <label class="right_menu_label">Beard</label>
+                    <li class="range">
+                        <input type="range" min="0" max="29" value="0" step="1" class="slider" data-type="component" id="beard" oninput="beardOutput.value=value">
+                        <output id="beardOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Beard Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0.0" step="0.01" class="slider" data-type="component" id="beardOpacity" oninput="beardOpacityOutput.value=value">
+                        <output id="beardOpacityOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Beard Color</label>
+                    <li class="color-picker range" id="beardColor">
+                    </li>
+                </ul>
+            </div>
+            <div id="makeup" class="right_submenu" style="display:none">
+                <ul>
+                    <label class="right_menu_label">Makeup</label>
+                    <li class="range">
+                        <input type="range" min="0" max="72" value="0" step="1" class="slider" data-type="component" id="makeup" oninput="makeupOutput.value=value">
+                        <output id="makeupOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Makeup Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0.0" step="0.01" class="slider" data-type="component" id="makeupOpacity" oninput="makeupOpacityOutput.value=value">
+                        <output id="makeupOpacityOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Lipstick</label>
+                    <li class="range">
+                        <input type="range" min="0" max="10" value="0" step="1" class="slider" data-type="component" id="lipstick" oninput="lipstickOutput.value=value">
+                        <output id="lipstickOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Lipstick Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0.0" step="0.01" class="slider" data-type="component" id="lipstickOpacity" oninput="lipstickOpacityOutput.value=value">
+                        <output id="lipstickOpacityOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Lipstick Color</label>
+                    <li class="color-picker range" id="lipstickColor">
+                    </li>
+                </ul>
+            </div>
+            <div id="aging" class="right_submenu" style="display:none">
+                <ul>
+                    <label class="right_menu_label">Aging</label>
+                    <li class="range">
+                        <input type="range" min="0" max="15" value="0" step="1" class="slider" data-type="component" id="aging" oninput="agingOutput.value=value">
+                        <output id="agingOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Aging Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0.0" step="0.01" class="slider" data-type="component" id="agingOpacity" oninput="agingOpacityOutput.value=value">
+                        <output id="agingOpacityOutput">0</output>
+                    </li>
+                </ul>
+            </div>
+            <div id="chest" class="right_submenu" style="display:none">
+                <ul>
+                    <label class="right_menu_label">Chesthair</label>
+                    <li class="range">
+                        <input type="range" min="0" max="17" value="0" step="1" class="slider" data-type="component" id="chesthair" oninput="chesthairOutput.value=value">
+                        <output id="chesthairOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Chesthair Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0" step="0.01" class="slider" data-type="component" id="chesthairOpacity" oninput="chesthairOpacityOutput.value=value">
+                        <output id="chesthairOpacityOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Chesthair Color</label>
+                    <li class="color-picker range" id="chesthairColor">
+                    </li>
+                </ul>
+            </div>
+            <div id="body" class="right_submenu" style="display:none">
+                <ul>
+                    <label class="right_menu_label">Sun Damage</label>
+                    <li class="range">
+                        <input type="range" min="0" max="11" value="0" step="1" class="slider" data-type="component" id="sunDamage" oninput="sunDamageOutput.value=value">
+                        <output id="sunDamageOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Sun Damage Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0.0" step="0.01" class="slider" data-type="component" id="sunDamageOpacity" oninput="sunDamageOpacityOutput.value=value">
+                        <output id="sunDamageOpacityOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Body Blemishes</label>
+                    <li class="range">
+                        <input type="range" min="0" max="12" value="0" step="1" class="slider" data-type="component" id="bodyBlemishes" oninput="bodyBlemishesOutput.value=value">
+                        <output id="bodyBlemishesOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">Body Blemishes Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0.0" step="0.01" class="slider" data-type="component" id="bodyBlemishesOpacity" oninput="bodyBlemishesOpacityOutput.value=value">
+                        <output id="bodyBlemishesOpacityOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">More Body Blemishes</label>
+                    <li class="range">
+                        <input type="range" min="0" max="1" value="0" step="1" class="slider" data-type="component" id="moreBodyBlemishes" oninput="moreBodyBlemishesOutput.value=value">
+                        <output id="moreBodyBlemishesOutput">0</output>
+                    </li>
+                    <label class="right_menu_label">More Body Blemishes Opacity</label>
+                    <li class="range">
+                        <input type="range" min="0" max="0.99" value="0.0" step="0.01" class="slider" data-type="component" id="moreBodyBlemishesOpacity" oninput="moreBodyBlemishesOpacityOutput.value=value">
+                        <output id="moreBodyBlemishesOpacityOutput">0</output>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="js/skin.js"></script>
+</body>
+
+</html>

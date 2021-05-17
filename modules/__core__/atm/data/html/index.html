@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./index.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <div class="container">
+      <div class="header">
+        <h1 class="header-item">Maze Bank</h1>
+        <h1 class="header-item" id="player-name"></h1>
+        <h2 class="header-item" id="player-balance"></h2>
+      </div>
+      <div class="wrapper">
+        <p class="fucking-quote">“Cocaine is God’s way of saying you’re making too much money.” – Robin Williams</p>
+        <p id="action-feedback"></p>
+        <div class="input-section">
+          <div class="input-container">
+            <input id="input-amount" type="number" placeholder="Amount" />
+          </div>
+        </div>
+        <div class="action-section">
+          <button class="action-button" id="action-deposit" onclick="depositMoney()">Deposit</button>
+          <div class="action-grid">
+            <button class="action-button" id="action-withdraw" onclick="withdrawMoney()">Withdraw</button>
+            <button class="action-button" id="action-transfer" onclick="transferMoney()">Transfer</button>
+          </div>
+        </div>
+        <div class="transfer-modal">
+          <div class="modal-con">
+            <p id="modal-amount"></p>
+            <input id="playerid" type="number" placeholder="Player ID" />
+            <button class="action-button" id="confirm-transfer" onclick="confirmTransfer()">Transfer</button>
+            <button class="action-button" id="close-transfer" onclick="cancelTransfer()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./index.js"></script>
+</body>
+</html>

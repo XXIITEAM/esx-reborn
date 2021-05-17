@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>ESX Reborn Scoreboard</title>
+    <link href="https://fonts.googleapis.com/css?family=Bebas+Neue:regular|Barlow+Condensed:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <style type="text/css">
+        html,
+        body {
+            width: 1920px;
+            height: 1080px;
+            margin: 0px;
+            overflow: hidden;
+        }
+        
+        body {
+            background-color: transparent;
+            transform: perspective(1400px) matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+            transform-style: preserve-3d;
+        }
+        
+        h1 {
+            color: rgb(255, 255, 255);
+            text-transform: uppercase;
+            font-weight: 300;
+            text-align: center;
+            border-radius: 20px;
+            padding: 1px;
+            font-family: "Trebuchet MS";
+            left: 0px;
+            font-size: 50px;
+            background-image: none;
+            background-color: rgb(15, 15, 15);
+            top: 0px;
+        }
+        
+        table {
+            width: 100%;
+            table-layout: fixed;
+        }
+        
+        .tbl-header {
+            width: 100%;
+            height: 40px;
+            background-image: none;
+            background-color: rgba(5, 5, 5, 0.95);
+            left: 0px;
+            top: 782px;
+        }
+        
+        .tbl-content {
+            height: 100%;
+            overflow-x: auto;
+            margin-top: 0px;
+            border: 10px;
+            background-image: none;
+            background-color: transparent;
+            left: 0px;
+            top: 0px;
+        }
+        
+        th {
+            text-align: center;
+            font-size: 30px;
+            font-weight: 400;
+            color: rgb(255, 255, 255);
+            text-transform: uppercase;
+            font-family: "Barlow Condensed";
+        }
+        
+        td {
+            text-align: center;
+            vertical-align: middle;
+            font-size: 28px;
+            background-color: rgba(10, 10, 10, 1);
+            padding: 10px;
+            color: rgb(255, 255, 255);
+            border-bottom: 2px solid rgba(120, 120, 120, 1);
+            border-top: 2px solid rgba(120, 120, 120, 1);
+            font-family: "Barlow Condensed";
+            font-weight: 200;
+        }
+        
+        section {
+            margin: 50px;
+        }
+        
+         ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+         ::-webkit-scrollbar-track {
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 6px inset;
+        }
+        
+         ::-webkit-scrollbar-thumb {
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 6px inset;
+        }
+        
+        .background {
+            position: absolute;
+            border-radius: 20px;
+            margin: 25.175px;
+            transform-style: preserve-3d;
+            top: 50%;
+            left: 50%;
+            width: 1280px;
+            height: 720px;
+            background-color: rgba(15, 15, 15, 0.95);
+            transform: translate3d(-665px, -499px, 0px);
+        }
+        
+        .SCOREBOARD {
+            font-family: "Courier New";
+            font-size: 50px;
+            left: 558px;
+            top: 4px;
+        }
+        
+        .v2 {
+            font-weight: bold;
+            font-family: "Courier New";
+            color: rgb(79, 180, 228);
+            left: 512px;
+            top: -4px;
+        }
+        
+        .stats {
+            color: rgb(255, 255, 255);
+            font-size: 25px;
+            padding-left: 0px;
+            text-align: center;
+            left: 37px;
+            width: 300px;
+            top: 4px;
+            font-family: Verdana;
+            position: absolute;
+            height: 54.825px;
+            font-style: italic;
+            font-weight: normal;
+        }
+        
+        .table.style {
+            background-image: none;
+            background-color: transparent;
+        }
+        
+        .esx-banner {
+            position: absolute;
+            width: 1280px;
+            background-image: none;
+            left: 0px;
+            top: -4px;
+            background-color: rgba(5, 5, 5, 0.95);
+            height: 65px;
+        }
+        
+        .ESX {
+            position: absolute;
+            text-align: center;
+            color: rgb(255, 255, 255);
+            background-image: none;
+            background-color: transparent;
+            font-family: "Barlow Condensed";
+            font-size: 50px;
+            left: 13px;
+            top: -2px;
+            width: 344.333px;
+            height: 61.3333px;
+            transform-origin: 50% 50%;
+            font-weight: 300;
+            font-style: italic;
+        }
+        
+        .players-text {
+            position: absolute;
+            text-align: center;
+            color: rgb(255, 255, 255);
+            transform-origin: 50% 50% 0px;
+            width: 393px;
+            height: 57px;
+            font-family: "Barlow Condensed";
+            font-size: 45px;
+            font-style: italic;
+            left: 920px;
+            top: 0px;
+            font-weight: 300;
+        }
+        
+        .tbody {
+            background-image: none;
+            background-color: transparent;
+        }
+        
+        .custom-text-border {
+            position: absolute;
+            font-family: "Barlow Condensed";
+            text-align: center;
+            color: rgb(255, 255, 255);
+            font-size: 30px;
+            font-weight: 500;
+            width: 368px;
+            height: 36px;
+            transform-origin: 50% 50% 0px;
+            left: 456px;
+            top: 10px;
+        }
+        
+        .V2 {
+            color: rgb(26, 150, 218);
+        }
+        
+        .playercount {
+            color: rgb(26, 150, 218);
+            left: 530px;
+            top: 2px;
+        }
+        
+        .totalcount {
+            color: rgb(26, 150, 218);
+            left: 520px;
+            top: 2px;
+        }
+        
+        .scoreboard-text {
+            font-weight: 300;
+        }
+        
+        .custom-text {
+            font-weight: normal;
+            left: 99px;
+            top: -1px;
+        }
+    </style>
+</head>
+
+<body class="htmlNoPages">
+    <!--for demo wrap-->
+    <div class="background">
+        <h1 class=""></h1>
+        <div class="tbl-header">
+            <table cellpadding="1" cellspacing="0">
+                <thead>
+                </thead>
+            </table>
+        </div>
+        <div class="tbl-content">
+            <table cellpadding="1" cellspacing="0" class="table-style">
+                <tbody class="tbody">
+                </tbody>
+            </table>
+        </div>
+        <div class="esx-banner"></div><span class="ESX">ESX<span class="V2">2</span> | <span class="scoreboard-text">SCOREBOARD</span></span><span class="players-text">PLAYERS | <span class="playercount"></span><span class="totalcount"> /32</span></span>
+        <span class="custom-text-border">| <span class="custom-text">Hello!</span> |&nbsp;</span>
+    </div>
+    <!-- follow me template -->
+    <script>
+        $('.background').hide()
+        window.addEventListener('message', function(event) {
+            let msg = event.data;
+            if (msg.action == "SHOW:SCOREBOARD") {
+                var table = $('.tbl-content');
+                var header = $('.tbl-header');
+                header.find('thead').empty();
+                table.find('tbody').empty();
+                header.find('thead').append(msg.header);
+                $('.background').show()
+
+            } else if (msg.action == "ADD:PLAYER") {
+                var table = $('.tbl-content');
+                var header = $('.tbl-header');
+                table.find('tbody').append(msg.data)
+            } else if (msg.action == "ADD:INFO") {
+                $(".playercount").html(msg.data);
+                $(".custom-text").html(msg.text);
+                $(".totalcount").html(msg.maxPlayers);
+            }
+        });
+
+        document.onkeyup = function(data) {
+            if (data.which == 8 || data.which == 27) {
+                var table = $('.tbl-content');
+                var header = $('.tbl-header');
+                header.find('thead').empty();
+                table.find('tbody').empty();
+                window.parent.postMessage({
+                    action: 'CLOSE:SCOREBOARD',
+                    data: 0
+                }, '*');
+                $(".background").hide()
+            }
+        };
+    </script>
+</body>
+
+</html>
