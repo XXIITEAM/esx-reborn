@@ -1,4 +1,4 @@
-# ESX 2
+# ESX Reborn
 
 ### Sill looking for old version ? => https://github.com/ESX-Org/esx-reborn/tree/v1-final
 
