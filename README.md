@@ -17,7 +17,7 @@
 ### Requirements:
 
 - An installed MariaDB server (we will not support MySQL).
-- [MySQL-Async by brouznouf](https://github.com/brouznouf/fivem-mysql-async)
+- [ghmattimysql by GHMatti](https://github.com/GHMatti/ghmattimysql/releases/tag/1.3.2)
 - [Node.Js 10+](https://nodejs.org/en/)
 
 ### How to Install:
@@ -32,7 +32,7 @@
 ```bash
 # minimum resources and config to get it working
 
-set mysql_connection_string "mysql://john:smith@localhost/esx-reborn?charset=utf8mb4"
+set mysql_connection_string "mysql://user:password@localhost/esx?charset=utf8mb4&multipleStatements=true"
 
 stop webadmin
 
@@ -46,7 +46,7 @@ ensure baseevents
 
 ensure yarn
 
-ensure mysql-async
+ensure ghmattimysql
 ensure cron
 
 ensure esx-reborn # Will now auto-generate fxmanifest.lua to prevent platform-dependant behavior, will prompt you to type ensure esx-reborn in console when fxmanifest has changed. To save some typing, uncomment below lines
