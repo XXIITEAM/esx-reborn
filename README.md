@@ -1,6 +1,6 @@
 # ESX Reborn
 
-### Sill looking for old version ? => https://github.com/ESX-Org/esx-reborn/tree/v1-final
+### Sill looking for old version ? => https://github.com/esx-framework/esx-legacy or https://github.com/esx-framework/es_extended/tree/legacy
 
 # Table of Contents
 
