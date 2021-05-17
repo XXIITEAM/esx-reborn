@@ -32,7 +32,7 @@
 ```bash
 # minimum resources and config to get it working
 
-set mysql_connection_string "mysql://user:password@localhost/esx?charset=utf8mb4&multipleStatements=true"
+set mysql_connection_string "mysql://user:password@localhost/esx-reborn?charset=utf8mb4&multipleStatements=true"
 
 stop webadmin
 
