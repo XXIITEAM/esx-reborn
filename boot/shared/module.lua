@@ -240,13 +240,17 @@ module.EntriesOrders     = {}
 
 for i=1, #module.GroupNames, 1 do
 
+
   local groupName        = module.GroupNames[i]
-  local modules          = json.decode(LoadResourceFile(resName, 'modules/__' .. groupName .. '__/modules.json'))
+
+  local modules            = json.decode(LoadResourceFile(resName, 'modules/__' .. groupName .. '__/modules.json'))
   module.Groups[groupName] = modules
 
-  for j=1, #modules, 1 do
-    local modName           = modules[j]
-    module.Entries[modName] = groupName
+  if modules then
+    for j=1, #modules, 1 do
+      local modName           = modules[j]
+      module.Entries[modName] = groupName
+    end
   end
 
 end
@@ -405,12 +409,15 @@ module.Boot = function()
     local groupName = module.GroupNames[i]
     local group     = module.Groups[groupName]
 
-    for j=1, #group, 1 do
+    if group then
+      for j=1, #group, 1 do
 
-      local name = group[j]
+        local name = group[j]
 
-      if module.ModuleHasEntryPoint(name, groupName) then
-        M(name, groupName)
+        if module.ModuleHasEntryPoint(name, groupName) then
+          M(name, groupName)
+        end
+
       end
 
     end
