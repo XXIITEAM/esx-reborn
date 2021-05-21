@@ -450,7 +450,11 @@ module.game.getVehicleProperties = function(vehicle)
 
   if DoesEntityExist(vehicle) then
 
-    local colorPrimary, colorSecondary = GetVehicleColours(vehicle)
+    local colorPrimary = {}
+    local colorSecondary = {}
+
+    colorPrimary.r, colorPrimary.b, colorPrimary.g = GetVehicleCustomPrimaryColour(vehicle)
+    colorSecondary.r, colorSecondary.b, colorSecondary.g = GetVehicleCustomSecondaryColour(vehicle)
     local pearlescentColor, wheelColor = GetVehicleExtraColours(vehicle)
     local extras = {}
 

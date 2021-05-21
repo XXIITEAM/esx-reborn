@@ -7,15 +7,27 @@
 --   You shall not use any piece of this software in a commercial product / service
 --   You shall not resell this software
 --   You shall not provide any facility to install this particular software in a commercial product / service
---   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
+--   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/es_extended
 --   This copyright should appear in every part of the project code
+
+------------------------------------------------------------------------
+----------                                                    ----------
+--                                INIT                                --
+----------                                                    ----------
+------------------------------------------------------------------------
 
 module.Init()
 
-ESX.SetInterval(15000, function()
-    if module.Updated then
-        module.Updated = false
-    else
-        module.ShopInUse = false
-    end
+------------------------------------------------------------------------
+----------                                                    ----------
+--                              THREADS                               --
+----------                                                    ----------
+------------------------------------------------------------------------
+
+ESX.SetInterval(10000, function()
+  if module.Updated then
+    module.Updated = false
+  else
+    module.ShopInUse = false
+  end
 end)
