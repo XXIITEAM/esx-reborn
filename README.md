@@ -119,11 +119,11 @@ Another thing is the performance, so far, it's more optimized to work this way.
 
 ## Module Examples <a name="examples"></a>
 
-### [How to create and use menus <a name="examples-menu"></a>](https://github.com/ESX-Framework/esx-reborn/tree/develop/modules/__examples__/menu/)
+### [How to create and use menus <a name="examples-menu"></a>](https://github.com/ESX-Framework/esx-reborn/tree/main/modules/__examples__/menu/)
 
 ![Menu](https://i.snipboard.io/tF8AcT.jpg)
 
-### [How to create basic command <a name="examples-command"></a>](https://github.com/ESX-Framework/esx-reborn/tree/develop/modules/__examples__/commands/)
+### [How to create basic command <a name="examples-command"></a>](https://github.com/ESX-Framework/esx-reborn/tree/main/modules/__examples__/commands/)
 
 ### More to come...
 
