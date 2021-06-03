@@ -20,4 +20,12 @@ onServer('esx:license:removedLicense', function(name)
   utils.ui.showNotification(_U('license:license_removed', name))
 end)
 
+onServer('esx:license:revokedLicense', function(name)
+  utils.ui.showNotification(_U('license:license_revoked', name))
+end)
+
+onServer('esx:license:validatedLicense', function(name)
+  utils.ui.showNotification(_U('license:license_validated', name))
+end)
+
 --

@@ -13,32 +13,48 @@
 M('class')
 M('events')
 
-License = Extends(EventEmitter, 'License')
+-------------------------------------------------------------------------
+--- Licenses
+-------------------------------------------------------------------------
 
-function License:constructor(data, playerId)
+Licenses = Extends(EventEmitter, 'Licenses')
+
+function Licenses:constructor(data, playerId)
 
   self.super:ctor()
 
-  self.licenses = data
+  self.licenses = {}
+
+  for k,v in pairs(data) do
+    self.licenses[k] = License(v)
+  end
 
   self:on('license.add', function(licenseName)
     emitClient('esx:license:addedLicense', playerId, licenseName)
   end)
 
-  self:on('license.remove', function(licenseName)
+  self:on('license.revoked', function(licenseName)
+    emitClient('esx:license:revokedLicense', playerId, licenseName)
+  end)
+
+  self:on('license.removed', function(licenseName)
     emitClient('esx:license:removedLicense', playerId, licenseName)
+  end)
+
+  self:on('license.validated', function(licenseName)
+    emitClient('esx:license:validatedLicense', playerId, licenseName)
   end)
 
 end
 
-function License:hasLicense(name)
-  return table.indexOf(self.licenses, name) ~= -1
+function Licenses:hasLicense(name)
+  return self.licenses[name] ~= nil
 end
 
-function License:addLicense(name)
+function Licenses:addLicense(name)
 
   if not self:hasLicense(name) then
-    self.licenses[#self.licenses + 1] = name
+    self.licenses[name] = License()
     self:emit('license.add', name)
     return true
   end
@@ -47,37 +63,127 @@ function License:addLicense(name)
 
 end
 
-function License:removeLicense(name)
+function Licenses:removeLicense(name)
 
-  local newLicenses = {}
-  local found    = false
-
-  for i=1, #self.licenses, 1 do
-
-    local license = self.licenses[i]
-
-    if license == name then
-      found = true
-    else
-      newLicenses[#newLicenses + 1] = license
-    end
-
+  if self.licenses[name] then
+    self.licenses[name] = nil
+    self:emit('license.removed', name)
+    return true
   end
 
-  self.licenses = newLicenses
-
-  if found then
-    self:emit('license.remove', name)
-  end
-
-  return found
+ return false
 
 end
 
+function Licenses:revokeLicense(name)
+
+  if self.licenses[name] and self.licenses[name].status ~= module.LicenseStatus.REVOKED then
+    self.licenses[name]:revoke()
+    self:emit('license.revoked', name)
+    return true
+  end
+
+ return false
+
+end
+
+function Licenses:validateLicense(name)
+
+  if self.licenses[name] and self.licenses[name].status ~= module.LicenseStatus.VALID then
+    self.licenses[name]:validate()
+    self:emit('license.validated', name)
+    return true
+  end
+
+ return false
+
+end
+
+function Licenses:isValid(name)
+
+  if self.licenses[name] then
+    return self.licenses[name]:isValid()
+  end
+
+ return false
+
+end
+
+function Licenses:getLicense(name)
+
+  if self.licenses[name] == nil then
+    return nil
+  end
+
+  local license = {}
+  license.type = name
+  license.valid = self.licenses[name].valid
+
+ return license
+
+end
+
+function Licenses:serialize()
+
+  local data = {}
+
+  for k,v in pairs(self.licenses) do
+    data[k] = v:serialize()
+  end
+
+  return data
+
+end
+
+-------------------------------------------------------------------------
+--- Individual License
+-------------------------------------------------------------------------
+
+License = Extends(nil, 'License')
+
+function License:constructor(data)
+
+  self.status = data and data.status or module.LicenseStatus.VALID
+
+end
+
+License.all = setmetatable({}, {
+  __index    = function(t, k) return rawget(t, tostring(k)) end,
+  __newindex = function(t, k, v) rawset(t, tostring(k), v) end,
+})
+
+function License:isValid()
+
+  return self.status == module.LicenseStatus.VALID
+
+end
+
+function License:validate()
+
+  self.status = module.LicenseStatus.VALID
+
+end
+
+function License:revoke()
+
+  self.status = module.LicenseStatus.REVOKED
+
+end
 
 function License:serialize()
 
-  return self.licenses
+  local data = {}
+  data.status = self.status
+
+  return data
 
 end
 
+-------------------------------------------------------------------------
+--- License Status ENUM
+-------------------------------------------------------------------------
+
+module.LicenseStatus = {
+  REVOKED     = 0,
+  VALID       = 1
+}

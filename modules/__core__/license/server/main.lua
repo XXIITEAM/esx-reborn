@@ -20,6 +20,10 @@ addLicenseCommand:setHandler(function(player, args)
   local license = args.license
   local targetPlayer = args.targetPlayer
 
+  if license == nil then
+    return emitClient("chat:addMessage", player.source, {args = {'^1SYSTEM', _U('commanderror_nolicense')}})
+  end
+
   local targetIdentity = targetPlayer.identity
 
   if targetIdentity == nil then
@@ -42,6 +46,10 @@ removeLicenseCommand:setHandler(function(player, args)
   local license = args.license
   local targetPlayer = args.targetPlayer
 
+  if license == nil then
+    return emitClient("chat:addMessage", player.source, {args = {'^1SYSTEM', _U('commanderror_nolicense')}})
+  end
+
   local targetIdentity = targetPlayer.identity
 
   if targetIdentity == nil then
@@ -56,5 +64,60 @@ removeLicenseCommand:setHandler(function(player, args)
 
 end)
 
+local revokeLicenseCommand = Command("revokelicense", "admin", "Revokes a license of a player")
+revokeLicenseCommand:addArgument("targetPlayer", "player", "The player to revoke the license to")
+revokeLicenseCommand:addArgument("license", "string", "The license to revoke")
+revokeLicenseCommand:setRconAllowed(true)
+revokeLicenseCommand:setHandler(function(player, args)
+  local license = args.license
+  local targetPlayer = args.targetPlayer
+
+  if license == nil then
+    return emitClient("chat:addMessage", player.source, {args = {'^1SYSTEM', _U('commanderror_nolicense')}})
+  end
+
+  local targetIdentity = targetPlayer.identity
+
+  if targetIdentity == nil then
+    return emitClient("chat:addMessage", player.source, {args = {'^1SYSTEM', _U('commanderror_noidentity')}})
+  end
+
+  local result = targetIdentity:getLicenses():revokeLicense(license, reason)
+
+  if result then
+    targetIdentity:save()
+  end
+
+end)
+
+
+local validateLicenseCommand = Command("validatelicense", "admin", "Validates a license of a player")
+validateLicenseCommand:addArgument("targetPlayer", "player", "The player to validate the license to")
+validateLicenseCommand:addArgument("license", "string", "The license to validate")
+validateLicenseCommand:setRconAllowed(true)
+validateLicenseCommand:setHandler(function(player, args)
+  local license = args.license
+  local targetPlayer = args.targetPlayer
+
+  if license == nil then
+    return emitClient("chat:addMessage", player.source, {args = {'^1SYSTEM', _U('commanderror_nolicense')}})
+  end
+
+  local targetIdentity = targetPlayer.identity
+
+  if targetIdentity == nil then
+    return emitClient("chat:addMessage", player.source, {args = {'^1SYSTEM', _U('commanderror_noidentity')}})
+  end
+
+  local result = targetIdentity:getLicenses():validateLicense(license)
+
+  if result then
+    targetIdentity:save()
+  end
+
+end)
+
 addLicenseCommand:register()
 removeLicenseCommand:register()
+revokeLicenseCommand:register()
+validateLicenseCommand:register()
