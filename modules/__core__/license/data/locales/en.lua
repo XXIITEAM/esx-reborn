@@ -13,5 +13,7 @@
 Translations = {
 
   ['license_added'] = 'Congratulations! You now have a %s license.',
-  ['license_removed'] = '%s license has been removed.'
+  ['license_removed'] = 'Your %s license has been removed.',
+  ['license_revoked'] = 'Your %s license has been revoked.',
+  ['license_validated'] = 'Your %s license is now valid.'
 }

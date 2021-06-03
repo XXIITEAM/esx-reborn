@@ -32,7 +32,7 @@ Identity.define({
   {name = 'status',     field = {name = 'status',     type = 'VARCHAR',    length = 999, default = json.encode(status),   extra = nil}, encode = json.encode, decode = json.decode},
   {name = 'health',     field = {name = 'health',     type = 'INT',        length = nil, default = 200,                   extra = 'NOT NULL'}, encode = json.encode, decode = json.decode},
   {name = 'accounts',   field = {name = 'accounts',   type = 'VARCHAR',    length = 255, default = json.encode(accounts), extra = nil}, encode = json.encode, decode = json.decode},
-  {name = 'licenses',   field = {name = 'licenses',   type = 'MEDIUMTEXT', length = nil, default = '[]',                  extra = nil}, encode = json.encode, decode = json.decode}
+  {name = 'licenses',   field = {name = 'licenses',   type = 'MEDIUMTEXT', length = nil, default = json.encode({}),       extra = nil}, encode = json.encode, decode = json.decode}
 })
 
 Identity.all = setmetatable({}, {
@@ -86,7 +86,7 @@ function Identity.loadForPlayer(identity, player)
   identity:field('status', Status(identity:getStatus()), status)
 
   -- Construct licenses from serialized licenses
-  identity:field('licenses', License(identity:getLicenses(), player.source))
+  identity:field('licenses', Licenses(identity:getLicenses(), player.source))
 
   player:setIdentityId(identity:getId())
   player:field('identity', identity)
