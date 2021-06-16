@@ -382,6 +382,16 @@ body {
     justify-content: center;
 }
 
+#makeupColor {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: none;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
 #lipstickColor {
     height: 100%;
     display: flex;
