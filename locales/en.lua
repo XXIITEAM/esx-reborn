@@ -174,6 +174,10 @@ Locales['en'] = {
   ['locale_digit_grouping_symbol'] = ',',
   ['locale_currency'] = '$%s',
 
+  -- Vehicles
+  ['vehicle_buy_success'] = '^7[^4%s^7 |^5 %s %s^7] ^3bought^7: ^5%s^7 with the plates ^3%s ^7for ^2$%s^7',
+  ['vehicles_all_stored'] = '^2returned all owned vehicles to their garages^7',
+  
   -- Weapons
   ['weapon_knife'] = 'knife',
   ['weapon_nightstick'] = 'nightstick',
