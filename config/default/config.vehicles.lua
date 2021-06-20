@@ -10,24 +10,6 @@
 --   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
-M('events')
-M('serializable')
-M('cache')
-M('ui.menu')
-
-local HUD   = M('game.hud')
-local utils = M("utils")
-
-module.Init()
-
-ESX.SetInterval(0, function()
-  if module.InMarker then
-    if IsControlJustReleased(0, 38) then
-      module.CurrentAction()
-    end
-
-    if module.IsInGarageMenu then
-      DisableControlAction(0,51,true)
-    end
-  end
-end)
+Config.Modules.Vehicles = {
+  ResellPercentage = 50 -- in %
+}

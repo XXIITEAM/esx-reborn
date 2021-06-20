@@ -10,20 +10,6 @@
 --   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
-------------------------------------------------------------------------
-----------                                                    ----------
---                                INIT                                --
-----------                                                    ----------
-------------------------------------------------------------------------
-
-module.Init()
-
-------------------------------------------------------------------------
-----------                                                    ----------
---                              THREADS                               --
-----------                                                    ----------
-------------------------------------------------------------------------
-
 ESX.SetInterval(10000, function()
   if module.Updated then
     module.Updated = false

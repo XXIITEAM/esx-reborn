@@ -9,3 +9,26 @@
 --   You shall not provide any facility to install this particular software in a commercial product / service
 --   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
+
+onRequest("utils:spawnVehicle", function(source, cb, model, location, heading)
+  if model and type(model) == 'string' then
+    module.game.createVehicle(model, location, heading, function(vehicle)
+      local count = 0
+
+      while not DoesEntityExist(vehicle) and count < 1000 do
+        count = count + 1
+        Wait(10)
+      end
+      
+      if DoesEntityExist(vehicle) then
+        local vehicleID = NetworkGetNetworkIdFromEntity(vehicle)
+
+        cb(vehicleID)
+      else
+        cb(false)
+      end
+    end)
+  else
+    cb(false)
+  end
+end)

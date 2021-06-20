@@ -10,4 +10,22 @@
 --   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
-module.Init()
+ESX.SetInterval(10000, function()
+  if module.Ready then
+    for k,v in pairs(module.Updated) do
+      if v then
+        if not module.Updated[k] then
+          module.Updated[k] = false
+        end
+
+        module.Updated[k] = false
+      else
+        if not module.GarageInUse[k] then
+          module.GarageInUse[k] = false
+        end
+
+        module.GarageInUse[k] = false
+      end
+    end
+  end
+end)

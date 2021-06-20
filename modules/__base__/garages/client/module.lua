@@ -10,28 +10,53 @@
 --   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
-M('events')
-M('serializable')
-M('cache')
-M('ui.menu')
+------------------------------------------------------------------------
+----------                                                    ----------
+--                              IMPORTS                               --
+----------                                                    ----------
+------------------------------------------------------------------------
 
+M('events')
 local Interact = M('interact')
 local utils    = M("utils")
 local camera   = M("camera")
 
+------------------------------------------------------------------------
+----------                                                    ----------
+--                              VARIABLES                             --
+----------                                                    ----------
+------------------------------------------------------------------------
+
 module.Config  = run('data/config.lua', {vector3 = vector3})['Config']
 
-module.isInGarageMenu    = false
-module.inMarker          = false
-module.CurrentAction     = nil
-module.CurrentActionData = nil
-module.spawnedVehicle    = nil
-module.savedPosition     = nil
-module.vehicleLoaded     = false
+module.Frame = Frame('garages', 'https://cfx-nui-' .. __RESOURCE__ .. '/modules/__base__/garages/data/html/index.html', true)
 
------------------------------------------------------------------------------------
--- INIT
------------------------------------------------------------------------------------
+module.Frame:on('load', function()
+  module.Ready = true
+end)
+
+module.Ready                 = false
+module.CharacterLoaded       = false
+module.Mouse                 = {down = {}, pos = {x = -1, y = -1}}
+module.IsInGarageMenu        = false
+module.InMarker              = false
+module.CurrentDisplayVehicle = nil
+module.VehicleLoaded         = false
+module.CurrentAction         = nil
+module.CurrentActionData     = nil
+module.CurrentMenu           = nil
+module.CurrentVehicle        = nil
+module.CurrentCategory       = nil
+module.CurrentValue          = nil
+module.CurrentLocation       = nil
+module.OwnedVehicles         = {}
+module.HasVehicles           = false
+
+------------------------------------------------------------------------
+----------                                                    ----------
+--                                INIT                                --
+----------                                                    ----------
+------------------------------------------------------------------------
 
 module.Init = function()
   local translations = run('data/locales/' .. Config.Locale .. '.lua')['Translations']
@@ -53,12 +78,6 @@ module.Init = function()
     end
   end)
 
-  request("garages:storeAllVehicles", function(result)
-    if result then
-      print(_U('garages:returned_vehicles_to_garages_client'))
-    end
-  end)
-
   for k, v in pairs(module.Config.GarageEntrances) do
 
     local key = 'garages:entrance:' .. tostring(k)
@@ -73,6 +92,7 @@ module.Init = function()
       size         = v.Size,
       mtype        = v.Type,
       color        = v.Color,
+      garage       = v.Garage,
       rotate       = true,
       bobUpAndDown = false,
       faceCamera   = true,
@@ -83,7 +103,8 @@ module.Init = function()
       if data.name == key then
         module.CurrentActionData = {
           Location = data.location,
-          Pos      = module.Config.GarageEntrances[data.location].Pos
+          Garage   = data.garage,
+          Pos      = data.pos
         }
 
         Interact.ShowHelpNotification(_U('garages:press_to_retrieve'))
@@ -92,8 +113,8 @@ module.Init = function()
           module.OpenGarageMenu(module.CurrentActionData)
         end
 
-        if not module.inMarker then
-          module.inMarker = true
+        if not module.InMarker then
+          module.InMarker = true
         end
       end
     end)
@@ -117,6 +138,7 @@ module.Init = function()
       size         = v.Size,
       mtype        = v.Type,
       color        = v.Color,
+      garage       = v.Garage,
       rotate       = true,
       bobUpAndDown = false,
       faceCamera   = true,
@@ -132,19 +154,25 @@ module.Init = function()
 
           if GetPedInVehicleSeat(vehicle, -1) == ped then
 
+            local plate = GetVehicleNumberPlateText(vehicle)
+            local formattedPlate = module.FormatPlate(plate)
             Interact.ShowHelpNotification(_U('garages:press_to_store'))
 
             module.CurrentActionData = {
               Location = data.location,
-              Pos      = module.Config.GarageReturns[data.location].Pos
+              Garage   = data.garage,
+              Pos      = data.pos,
+              Garage   = data.garage,
+              Plate    = formattedPlate,
+              Vehicle  = vehicle
             }
 
             module.CurrentAction = function()
               module.StoreVehicle(module.CurrentActionData)
             end
 
-            if not module.inMarker then
-              module.inMarker = true
+            if not module.InMarker then
+              module.InMarker = true
             end
           end
         else
@@ -159,412 +187,489 @@ module.Init = function()
   end
 end
 
------------------------------------------------------------------------------------
--- MENU FUNCTIONS
------------------------------------------------------------------------------------
+------------------------------------------------------------------------
+----------                                                    ----------
+--                                MENU                                --
+----------                                                    ----------
+------------------------------------------------------------------------
 
 module.OpenGarageMenu = function(data)
-  local items = {}
+  Interact.StopHelpNotification()
 
-  request('garages:getOwnedVehicles', function(vehicles)
+  local ped         = PlayerPedId()
+
+  module.SavedPosition = GetEntityCoords(ped, true)
+
+  request('vehicles:getOwnedVehicles', function(vehicles)
     if vehicles then
+      while not module.Ready do
+        Wait(100)
+      end
 
-      module.savedPosition = data.Pos
+      module.OwnedVehicles = {
+        ["sedans"]         = {},
+        ["compacts"]       = {},
+        ["muscle"]         = {},
+        ["sports"]         = {},
+        ["sportsclassics"] = {},
+        ["super"]          = {},
+        ["suvs"]           = {},
+        ["offroad"]        = {},
+        ["motorcycles"]    = {}
+      }
 
+      for k,v in pairs(vehicles) do
+        if k and v.category then
+          local plate = tostring(k)
+          local category = tostring(v.category)
+
+          if v.stored == 1 and v.garage == data.Garage then
+            if module.OwnedVehicles[category] then
+              table.insert(module.OwnedVehicles[category], v)
+            end
+          end
+        end
+      end
+      
+
+      for k,_ in pairs(module.OwnedVehicles) do
+        if #module.OwnedVehicles[k] >= 1 then
+          module.HasVehicles = true
+        end
+      end
+
+      module.Frame:postMessage({
+        ["type"]           = "initData",
+        ["sedans"]         = tonumber(#module.OwnedVehicles["sedans"]),
+        ["compact"]        = tonumber(#module.OwnedVehicles["compacts"]),
+        ["muscle"]         = tonumber(#module.OwnedVehicles["muscle"]),
+        ["sports"]         = tonumber(#module.OwnedVehicles["sports"]),
+        ["sportsclassics"] = tonumber(#module.OwnedVehicles["sportsclassics"]),
+        ["super"]          = tonumber(#module.OwnedVehicles["super"]),
+        ["suvs"]           = tonumber(#module.OwnedVehicles["suvs"]),
+        ["offroad"]        = tonumber(#module.OwnedVehicles["offroad"]),
+        ["motorcycles"]    = tonumber(#module.OwnedVehicles["motorcycles"])
+      })
+    end
+
+    if module.HasVehicles then
+      DoScreenFadeOut(500)
+  
+      while not IsScreenFadedOut() do
+        Citizen.Wait(0)
+      end
+  
+      camera.start()
+  
+      SetEntityCoords(ped, module.Config.GarageSpawns[data.Location].Pos)
+      module.CurrentLocation = data.Location
+      FreezeEntityPosition(ped, true)
+      SetEntityVisible(ped, false)
+  
+      module.MainCameraScene()
+  
+      Citizen.Wait(500)
+  
+      camera.setPolarAzimuthAngle(250.0, 120.0)
+      camera.setRadius(3.5)
+  
+      emit('esx:identity:preventSaving', true)
+  
+      module.IsInGarageMenu = true
+      DoScreenFadeIn(500)
+  
+      module.Frame:postMessage({
+        type = "open"
+      })
+  
+      module.Frame:focus(true, true)
+    else
+      utils.ui.showNotification(_U('garages:no_vehicles_garage'))
+    end
+  end)
+end
+
+module.Frame:on('message', function(msg)
+  if msg.action == 'garages.changesedans' then
+    module.ChangeVehicle("sedans", msg.data.value)
+  elseif msg.action == "garages.changecompact" then
+    module.ChangeVehicle("compacts", msg.data.value)
+  elseif msg.action == "garages.changemuscle" then
+    module.ChangeVehicle("muscle", msg.data.value)
+  elseif msg.action == "garages.changesports" then
+    module.ChangeVehicle("sports", msg.data.value)
+  elseif msg.action == "garages.changesportsclassics" then
+    module.ChangeVehicle("sportsclassics", msg.data.value)
+  elseif msg.action == "garages.changesuper" then
+    module.ChangeVehicle("super", msg.data.value)
+  elseif msg.action == "garages.changesuvs" then
+    module.ChangeVehicle("suvs", msg.data.value)
+  elseif msg.action == "garages.changeoffroad" then
+    module.ChangeVehicle("offroad", msg.data.value)
+  elseif msg.action == "garages.changemotorcycles" then
+    module.ChangeVehicle("motorcycles", msg.data.value)
+  elseif msg.action == "garages.changeTab" then
+    module.DeleteDisplayVehicleInsideGarage()
+    module.ClearAll()
+    module.CurrentCategory = tostring(msg.data.value)
+  elseif msg.action == "garages.exit" then
+    module.ExitGarage()
+  elseif msg.action == "garages.takeVehicle" then
+    module.TakeVehicle()
+  elseif msg.action == 'mouse.move' then
+    module.MouseMove(msg)
+  elseif msg.action == 'mouse.wheel' then
+    module.MouseWheel(msg)
+  elseif msg.action == 'mouse.in' then
+    camera.setMouseIn(true)
+  elseif msg.action == 'mouse.out' then
+    camera.setMouseIn(false)
+  end
+end)
+
+module.ClearAll = function()
+  module.InMarker              = false
+  module.IsInGarageMenu        = false
+  module.InSellMarker          = false
+  module.CurrentAction         = nil
+  module.CurrentCategory       = nil
+  module.CurrentVehicle        = nil
+  module.CurrentValue          = nil
+  module.CurrentPlate          = nil
+  module.CurrentDisplayVehicle = nil
+  module.VehicleLoaded         = false
+  module.HasVehicles           = false
+end
+
+module.MouseMove = function(msg)
+  local last = table.clone(module.Mouse)
+  local data = table.clone(last)
+
+  data.pos.x, data.pos.y = msg.data.x, msg.data.y
+
+  if (last.x ~= -1) and (last.y ~= -1) then
+
+    local offsetX = msg.data.x - last.pos.x
+    local offsetY = msg.data.y - last.pos.y
+    local data = {}
+    data.down = {}
+
+    if msg.data.leftMouseDown then
+      data.down[0] = true
+    else
+      data.down[0] = false
+    end
+
+    if msg.data.rightMouseDown then
+      data.down[2] = true
+    else
+      data.down[2] = false
+    end
+
+    data.direction = {left = offsetX < 0, right = offsetX > 0, up = offsetY < 0, down = offsetY > 0}
+    emit('mouse:move:offset', offsetX, offsetY, data)
+  end
+
+  module.Mouse = data
+end
+
+module.MainCameraScene = function()
+  local ped       = PlayerPedId()
+  local pedCoords = GetEntityCoords(ped)
+  local forward   = GetEntityForwardVector(ped)
+
+  camera.setRadius(2.5)
+  camera.setCoords(pedCoords + forward * 1.25)
+  camera.setPolarAzimuthAngle(utils.math.world3DtoPolar3D(pedCoords, pedCoords + forward * 1.25))
+
+  camera.pointToBone(SKEL_Head)
+end
+
+module.MouseWheel = function(msg)
+  emit('mouse:wheel', msg.data)
+end
+
+module.ChangeVehicle = function(cat, val)
+  if not module.Busy then
+    module.Busy = true
+    module.DeleteDisplayVehicleInsideGarage()
+    module.CurrentDisplayVehicle = nil
+    module.CurrentVehicle        = nil
+    module.VehicleLoaded         = false
+
+    local category = tostring(cat)
+    local value    = tonumber(val)
+
+    if value > 0 then
+      for k,v in pairs(module.OwnedVehicles[category]) do
+        if tostring(k) == tostring(value) then
+          module.CurrentVehicle = v
+        end
+      end
+
+      if module.CurrentVehicle then
+        local ped          = PlayerPedId()
+        local name         = tostring(module.CurrentVehicle["name"])
+        local make         = module.CurrentVehicle["make"]
+        local plate        = module.CurrentVehicle["plate"]
+        local fuelType     = module.CurrentVehicle["fuelType"]
+        local vehicleProps = module.CurrentVehicle["vehicle"]
+
+        if not make then
+          make = "unknown"
+        end
+
+        module.CurrentCategory = category
+        module.CurrentValue    = value
+
+        utils.game.requestModel(module.CurrentVehicle["model"], function()
+          RequestCollisionAtCoord(module.Config.GarageSpawns[module.CurrentLocation].Pos)
+        end)
+
+        utils.game.waitForVehicleToLoad(module.CurrentVehicle["model"])
+
+        utils.game.createLocalVehicle(module.CurrentVehicle["model"], module.Config.GarageSpawns[module.CurrentLocation].Pos, module.Config.GarageSpawns[module.CurrentLocation].Heading, function(vehicle)
+          module.CurrentDisplayVehicle = vehicle
+
+          while not DoesEntityExist(vehicle) do
+            Wait(100)
+          end
+
+          local mod               = GetEntityModel(vehicle, false)
+          local hash              = GetHashKey(mod)
+          local topSpeed          = GetVehicleMaxSpeed(vehicle) * 3.6
+          local acceleration      = GetVehicleModelAcceleration(mod)
+          local gears             = GetVehicleHighGear(vehicle)
+          local capacity          = GetVehicleMaxNumberOfPassengers(vehicle) + 1
+          local topSpeedStat      = (((topSpeed / module.Config.FastestVehicleSpeed) * 100))
+          local accelerationStat  = (((acceleration / module.Config.FastestVehicleAccel) * 100))
+          local gearsStat         = ((gears / module.Config.MaxGears) * 100)
+          local capacityStat      = ((capacity / module.Config.MaxCapacity) * 100)
+          local topSpeedLabel     = math.floor(topSpeed)
+          local accelerationLabel = string.format("%.2f", acceleration)
+
+          module.Frame:postMessage({ 
+            type = "selectVehicle",
+            data = { make = make, model = model, name = name, plate = plate, fuelType = fuelType },
+            stats = { topSpeed = topSpeedStat, acceleration = accelerationStat, gears = gearsStat, capacity = capacityStat},
+            labels = {
+              topSpeedLabel     = topSpeedLabel,
+              accelerationLabel = accelerationLabel,
+              gearsLabel        = gears,
+              capacityLabel     = capacity
+            }
+          })
+
+          utils.game.setVehicleProperties(vehicle, vehicleProps)
+
+          SetVehicleDirtLevel(vehicle, 0.0)
+          TaskWarpPedIntoVehicle(ped, vehicle, -1)
+          FreezeEntityPosition(vehicle, true)
+          SetModelAsNoLongerNeeded(module.CurrentVehicle["model"])
+          module.VehicleLoaded = true
+        end)
+      end
+    else
+      module.Frame:postMessage({ type = "removeVehicle" })
+    end
+  end
+
+  module.Busy = false
+end
+
+module.StoreVehicle = function(data)
+  local plate = module.FormatPlate(data.Plate)
+
+  request('vehicles:storeVehicleInGarage', function(result)
+    if result then
       DoScreenFadeOut(250)
 
       while not IsScreenFadedOut() do
         Citizen.Wait(0)
       end
+      
+      local vehicleProps = utils.game.getVehicleProperties(data.Vehicle)
+      emitServer('vehicles:updateVehicleProps', plate, vehicleProps)
+      utils.ui.showNotification(_U('garages:store_success'))
+      module.DeleteVehicle(data.Vehicle)
 
-      module.StartGarageRestriction()
-      module.EnterGarage(data)
-
-      module.isInGarageMenu = true
-
-      for _,value in pairs(vehicles) do
-        if value.stored == 1 and value.plate and value.sold == 0 then
-
-          local name = GetDisplayNameFromVehicleModel(value.model)
-
-          local vehicleData = {
-            vehicleProps = value.vehicle,
-            name         = name,
-            model        = value.model,
-            plate        = value.plate
-          }
-
-          if name == "CARNOTFOUND" then
-            items[#items + 1] = {type = 'button', name = 'model_error', label = '[' .. _U('garages:model_error_label') .. ']', value = "CARNOTFOUND"}
-          else
-            items[#items + 1] = {type = 'button', name = name, label = name .. ' [' .. value.plate .. ']', value = {vehicleProps = value.vehicle, name = name, model = value.model, plate = value.plate}}
-          end
-        elseif value.stored == 0 then
-          local name = GetDisplayNameFromVehicleModel(value.vehicle.model)
-          local plate = utils.math.Trim(value.plate)
-
-          local vehicleData = {
-            name  = name,
-            plate = plate
-          }
-
-          items[#items + 1] = {type = 'button', name = 'not_in_garage', label = name .. ' - [' .. _U('garages:not_in_garage_label') .. ']', value = vehicleData}
-        end
-      end
-
-      items[#items + 1] = {name = 'exit', label = '>> ' .. _U('exit') .. ' <<', type = 'button'}
-    else
-      utils.ui.showNotification(_U('garages:no_vehicles'))
-      return
+      
+      Citizen.Wait(500)
+      DoScreenFadeIn(250)
+      module.ClearAll()
     end
-
-    module.garageMenu = Menu('garages.garage', {
-      title = _U('garages:menu_title'),
-      float = 'top|left', -- not needed, default value
-      items = items
-    })
-
-    module.currentMenu = module.garageMenu
-
-    module.garageMenu:on('item.click', function(item, index)
-      if item.name == 'exit' then
-        module.ExitGarage()
-      elseif item.name == 'not_in_garage' then
-        utils.ui.showNotification(_U('garages:not_in_garage', item.value.name, item.value.plate))
-      elseif item.name == "model_error" then
-        utils.ui.showNotification(_U('garages:model_error'))
-      else
-        if item.value.plate then
-          module.commit(item.value.plate, item.value.model, item.value.vehicleProps, item.value.name, data)
-        else
-          utils.ui.showNotification(_U('garages:plate_error'))
-        end
-      end
-    end)
-  end)
+  end, plate, data.Garage)
 end
 
-module.OpenRetrievalMenu = function(plate, model, vehicleProps, name, data)
-  local items = {}
+module.FormatPlate = function(plate)
+  local currentPlate = plate
+  local firstChar = string.sub(currentPlate, 1, 1)
 
-  items[#items + 1] = {name = 'yes', label = '>> ' .. _U('yes') .. ' <<', type = 'button'}
-  items[#items + 1] = {name = 'no', label = '>> ' .. _U('no') .. ' <<', type = 'button'}
-
-  if module.garageMenu.visible then
-    module.garageMenu:hide()
+  if firstChar == " " then
+    currentPlate = string.sub(currentPlate, 2)
   end
 
-  module.retrievalMenu = Menu('garages.retrieval', {
-    title = _U('garages:retrieve_confirm', name),
-    float = 'top|left', -- not needed, default value
-    items = items
-  })
+  local lastChar = string.sub(currentPlate, #currentPlate)
 
-  module.currentMenu = module.retrievalMenu
-
-  module.retrievalMenu:on('destroy', function()
-    module.garageMenu:show()
-  end)
-
-  module.retrievalMenu:on('item.click', function(item, index)
-    if item.name == 'no' then
-      module.DeleteDisplayVehicleInsideGarage()
-      module.currentDisplayVehicle = nil
-
-      module.retrievalMenu:destroy()
-
-      module.currentMenu = module.garageMenu
-
-      module.garageMenu:focus()
-    elseif item.name == 'yes' then
-      request("garages:removeVehicleFromGarage", function(success)
-        if success then
-          module.ExitGarageWithSelectedVehicle()
-
-          while not IsScreenFadedOut() do
-            Citizen.Wait(0)
-          end
-
-          FreezeEntityPosition(PlayerPedId(), false)
-
-          SetEntityCoords(PlayerPedId(), module.Config.GarageSpawns[data.Location].Pos)
-
-          Citizen.Wait(100)
-
-          utils.game.createVehicle(model, module.Config.GarageSpawns[data.Location].Pos, module.Config.GarageSpawns[data.Location].Heading, function(vehicle)
-            local ped = PlayerPedId()
-            TaskWarpPedIntoVehicle(PlayerPedId(), vehicle, -1)
-
-            utils.game.setVehicleProperties(vehicle, vehicleProps)
-            SetVehicleNumberPlateText(vehicle, plate)
-          end)
-
-          Citizen.Wait(1000)
-          SetEntityVisible(PlayerPedId(), true)
-          DoScreenFadeIn(500)
-          utils.ui.showNotification(_U('garages:retrieve_success'))
-        else
-          module.ExitGarage()
-
-          utils.ui.showNotification(_U('garages:retrieve_failure'))
-        end
-      end, plate)
-    end
-  end)
-end
-
------------------------------------------------------------------------------------
--- LOGIC FUNCTIONS
------------------------------------------------------------------------------------
-
-module.EnterGarage = function(data)
-  camera.start()
-  module.mainCameraScene()
-  camera.setPolarAzimuthAngle(250.0, 120.0)
-  camera.setRadius(3.5)
-
-  Citizen.CreateThread(function()
-    local ped = PlayerPedId()
-    --SetEntityCoords(ped, module.Config.GarageMenuLocation)
-    SetEntityCoords(ped, module.Config.GarageSpawns[data.Location].Pos)
-    FreezeEntityPosition(ped, true)
-    SetEntityVisible(ped, false)
-  end)
-
-  Citizen.Wait(500)
-
-  camera.setPolarAzimuthAngle(220.0, 120.0)
-  camera.setRadius(3.5)
-  emit('esx:identity:preventSaving', true)
-  DoScreenFadeIn(250)
-end
-
-module.ExitGarage = function()
-  DoScreenFadeOut(100)
-
-  if module.retrievalMenu then
-    module.retrievalMenu:destroy()
+  if lastChar == " " then
+    currentPlate = string.sub(currentPlate, 1, #currentPlate - 1)
   end
 
-  if module.garageMenu then
-    module.garageMenu:destroy()
-  end
-
-  while not IsScreenFadedOut() do
-    Citizen.Wait(0)
-  end
-
-  FreezeEntityPosition(PlayerPedId(), false)
-  SetEntityVisible(PlayerPedId(), true)
-
-  module.ReturnPlayer(module.savedPosition)
-  camera.destroy()
-
-  emit('esx:identity:preventSaving', false)
-
-  module.isInGarageMenu = false
-
-  Citizen.Wait(250)
-  DoScreenFadeIn(500)
-end
-
-module.ExitGarageWithSelectedVehicle = function()
-
-  DoScreenFadeOut(100)
-
-  if module.retrievalMenu then
-    module.retrievalMenu:destroy()
-  end
-
-  if module.garageMenu then
-    module.garageMenu:destroy()
-  end
-
-  while not IsScreenFadedOut() do
-    Citizen.Wait(0)
-  end
-
-  if module.currentDisplayVehicle then
-    module.DeleteDisplayVehicleInsideGarage()
-    module.currentDisplayVehicle = nil
-    module.vehicleLoaded = false
-  end
-
-  camera.destroy()
-
-  emit('esx:identity:preventSaving', false)
-  module.isInGarageMenu = false
-  module.Exit()
-end
-
-module.StartGarageRestriction = function()
-  Citizen.CreateThread(function()
-    while module.isInGarageMenu do
-      Citizen.Wait(0)
-
-      DisableControlAction(0, 75,  true)
-      DisableControlAction(27, 75, true)
-    end
-  end)
-end
-
-module.showVehicleStats = function()
-  Citizen.CreateThread(function()
-    while true do
-      Citizen.Wait(0)
-      if module.vehicleLoaded then
-        local playerPed = PlayerPedId()
-
-        if IsPedSittingInAnyVehicle(playerPed) then
-          local vehicle = GetVehiclePedIsIn(playerPed, false)
-
-          if DoesEntityExist(vehicle) then
-            local model            = GetEntityModel(vehicle, false)
-            local hash             = GetHashKey(model)
-
-            local topSpeed         = GetVehicleMaxSpeed(vehicle) * 3.6
-            local acceleration     = GetVehicleModelAcceleration(model)
-            local gears            = GetVehicleHighGear(vehicle)
-            local capacity         = GetVehicleMaxNumberOfPassengers(vehicle) + 1
-
-            local topSpeedStat     = (((topSpeed / module.Config.fastestVehicleSpeed) / 2) * module.Config.statSizeX)
-            local accelerationStat = (((acceleration / 1.6) / 2) * module.Config.statSizeX)
-            local gearStat         = tostring(gears)
-            local capacityStat     = tostring(capacity)
-
-            if topSpeedStat > 0.24 then
-              topSpeedStat = 0.24
-            end
-
-            if accelerationStat > 0.24 then
-              accelerationStat = 0.24
-            end
-
-            utils.ui.drawVehicleStats(module.Config.xoffset, module.Config.yoffset, module.Config.windowSizeX, module.Config.windowSizeY, module.Config.statOffsetX, module.Config.statSizeX, module.Config.statSizeY, topSpeedStat, accelerationStat, gearStat, capacityStat)
-          end
-        end
-      else
-        break
-      end
-    end
-  end)
-end
-
-module.SetMouseIn = function(value)
-  camera.setMouseIn(value)
-end
-
-module.commit = function(plate, model, vehicleProps, name, data)
-
-  local playerPed = PlayerPedId()
-
-  module.DeleteDisplayVehicleInsideGarage()
-
-  utils.game.waitForVehicleToLoad(model)
-
-  utils.game.createLocalVehicle(model, module.Config.GarageSpawns[data.Location].Pos, module.Config.GarageSpawns[data.Location].Heading, function(vehicle)
-    module.currentDisplayVehicle = vehicle
-
-    TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
-
-    utils.game.setVehicleProperties(vehicle, vehicleProps)
-
-    FreezeEntityPosition(vehicle, true)
-
-    local model = GetEntityModel(vehicle)
-
-    SetModelAsNoLongerNeeded(model)
-
-    module.OpenRetrievalMenu(plate, model, vehicleProps, name, data)
-
-    module.vehicleLoaded = true
-
-    if module.Config.EnableVehicleStats then
-      module.showVehicleStats()
-    end
-  end)
+  return currentPlate
 end
 
 module.DeleteDisplayVehicleInsideGarage = function()
-  local attempt = 0
+  if module.CurrentDisplayVehicle and DoesEntityExist(module.CurrentDisplayVehicle) then
+    local attempt = 0
 
-  if module.currentDisplayVehicle and DoesEntityExist(module.currentDisplayVehicle) then
-    while DoesEntityExist(module.currentDisplayVehicle) and not NetworkHasControlOfEntity(module.currentDisplayVehicle) and attempt < 100 do
-      Citizen.Wait(100)
-      NetworkRequestControlOfEntity(module.currentDisplayVehicle)
+    while DoesEntityExist(module.CurrentDisplayVehicle) and not NetworkHasControlOfEntity(module.CurrentDisplayVehicle) and attempt < 100 do
+      Wait(100)
+      NetworkRequestControlOfEntity(module.CurrentDisplayVehicle)
       attempt = attempt + 1
     end
 
-    if DoesEntityExist(module.currentDisplayVehicle) and NetworkHasControlOfEntity(module.currentDisplayVehicle) then
-      utils.game.deleteVehicle(module.currentDisplayVehicle)
-      module.currentDisplayVehicle = nil
-      module.vehicleLoaded = false
+    if DoesEntityExist(module.CurrentDisplayVehicle) and NetworkHasControlOfEntity(module.CurrentDisplayVehicle) then
+      module.DeleteVehicle(module.CurrentDisplayVehicle)
+      module.VehicleLoaded = false
     end
   end
 end
 
-module.ReturnPlayer = function(pos)
-  local ped = PlayerPedId()
-  SetEntityCoords(ped, pos)
+module.DeleteVehicle = function(vehicle)
+  SetEntityAsMissionEntity(vehicle, false, true)
+  DeleteVehicle(vehicle)
+end
 
-  Citizen.Wait(500)
-  DoScreenFadeIn(250)
+module.ExitGarage = function()
+  module.Frame:postMessage({ type = "close" })
+
+  local ped = PlayerPedId()
+  module.DeleteDisplayVehicleInsideGarage()
+  module.ClearAll()
+
+  DoScreenFadeOut(500)
+
+  while not IsScreenFadedOut() do
+    Citizen.Wait(0)
+  end
+
+  if module.SavedPosition then
+    SetEntityCoords(ped, module.SavedPosition)
+  else
+    SetEntityCoords(ped, module.Config.GarageEntrances[module.CurrentLocation].Pos)
+  end
+
+  SetEntityVisible(ped, true)
+
+  camera.destroy()
+
+  emit('esx:identity:preventSaving', false)
+
+  module.IsInGarageMenu = false
+  emitServer('garages:exitedMenu')
+
+  FreezeEntityPosition(ped, false)
+
+  Citizen.Wait(1000)
+  module.SavedPosition = nil
+  module.Frame:unfocus()
+  DoScreenFadeIn(500)
+  Interact.ShowHelpNotification(_U('garages:press_to_retrieve'))
+end
+
+module.TakeVehicle = function()
+  local plate = module.FormatPlate(module.CurrentVehicle["plate"])
+
+  request('vehicles:removeVehicleFromGarage', function(result)
+    if result then
+      DoScreenFadeOut(500)
+
+      while not IsScreenFadedOut() do
+        Citizen.Wait(0)
+      end
+
+      request('utils:spawnVehicle', function(result)
+        if result then
+          module.ExitGarageAndEnterVehicle(result)
+        end
+      end, module.CurrentVehicle["model"], module.Config.GarageSpawns[module.CurrentLocation].Pos, module.Config.GarageSpawns[module.CurrentLocation].Heading)
+    else
+      utils.ui.showNotification("Error")
+    end
+  end, plate)
+end
+
+module.ExitGarageAndEnterVehicle = function(result)
+  module.DeleteDisplayVehicleInsideGarage()
+  module.Frame:postMessage({ type = "close" })
+  module.Frame:unfocus()
+
+  camera.destroy()
+
+  utils.game.requestModel(module.CurrentVehicle["model"], function()
+    RequestCollisionAtCoord(module.Config.GarageSpawns[module.CurrentLocation].Pos)
+  end)
+
+  utils.game.waitForVehicleToLoad(module.CurrentVehicle["model"])
+
+  local count = 0
+
+  while not NetworkDoesEntityExistWithNetworkId(result) and count < 1000 do
+    count = count + 1
+    Wait(10)
+  end
+
+  local vehicle = NetToVeh(result)
+
+  while not DoesEntityExist(vehicle) do
+    Wait(100)
+    local vehicle = NetToVeh(result)
+  end
+
+  local ped = PlayerPedId()
+
+  FreezeEntityPosition(ped, false)
+  SetEntityVisible(ped, true)
+
+  if DoesEntityExist(vehicle) then
+    local vehicleProps = module.CurrentVehicle["vehicle"]
+
+    utils.game.setVehicleProperties(vehicle, vehicleProps)
+    SetVehicleDirtLevel(vehicle, 0.0)
+
+    while not IsPedInVehicle(ped, vehicle, false) do
+      TaskWarpPedIntoVehicle(ped, vehicle, -1)
+      Wait(10)
+    end
+
+    SetNetworkIdCanMigrate(result, true)
+    SetEntityAsMissionEntity(vehicle, true, false)
+    SetVehicleHasBeenOwnedByPlayer(vehicle, true)
+    SetVehicleNeedsToBeHotwired(vehicle, false)
+    SetPedCanBeKnockedOffVehicle(ped, 0)
+    SetPedCanRagdoll(ped, true)
+    SetEntityVisible(ped, true)
+
+    Wait(500)
+
+    DoScreenFadeIn(500)
+
+    utils.ui.showNotification(_U('garages:retrieve_success'))
+
+    while not IsScreenFadedIn() do
+      Wait(0)
+    end
+
+    module.ClearAll()
+  end
+
+  emit('esx:identity:preventSaving', false)
+
+  module.IsInGarageMenu = false
+  emitServer('garages:exitedMenu')
 end
 
 module.Exit = function()
-  module.CurrentAction     = nil
-  module.CurrentActionData = nil
-  module.inMarker          = false
-
+  module.ClearAll()
   Interact.StopHelpNotification()
-end
-
-module.StoreVehicle = function()
-  local playerPed = PlayerPedId()
-
-  if IsPedSittingInAnyVehicle(playerPed) then
-    local vehicle = GetVehiclePedIsIn(playerPed, false)
-
-    if DoesEntityExist(vehicle) then
-      local plate        = utils.math.Trim(GetVehicleNumberPlateText(vehicle))
-      local vehicleProps = utils.game.getVehicleProperties(vehicle)
-
-      emitServer('garages:updateVehicle', plate, vehicleProps)
-      request('garages:storeVehicleInGarage', function(result)
-        if result then
-          DoScreenFadeOut(250)
-
-          while not IsScreenFadedOut() do
-          Citizen.Wait(0)
-          end
-
-          utils.game.deleteVehicle(vehicle)
-
-          Citizen.Wait(500)
-          utils.ui.showNotification(_U('garages:store_success'))
-          DoScreenFadeIn(250)
-        else
-          utils.ui.showNotification(_U('garages:do_not_own'))
-        end
-      end, plate)
-    end
-  end
-
-  module.Exit()
-end
-
------------------------------------------------------------------------------------
--- CAMERA FUNCTIONS
------------------------------------------------------------------------------------
-
-function module.mainCameraScene()
-  local ped       = PlayerPedId()
-  local pedCoords = GetEntityCoords(ped)
-  local forward   = GetEntityForwardVector(ped)
-
-  camera.setRadius(1.25)
-  camera.setCoords(pedCoords + forward * 1.25)
-  camera.setPolarAzimuthAngle(utils.math.world3DtoPolar3D(pedCoords, pedCoords + forward * 1.25))
-
-  camera.pointToBone(SKEL_ROOT)
 end

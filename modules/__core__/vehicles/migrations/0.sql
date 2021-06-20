@@ -8,6 +8,9 @@ CREATE TABLE `owned_vehicles` (
 	`fuel_type` VARCHAR(20) NOT NULL DEFAULT 'gasoline',
 	`type` VARCHAR(20) NOT NULL DEFAULT 'car',
 	`stored` TINYINT NOT NULL DEFAULT '0',
+  `garage` VARCHAR(32) NOT NULL DEFAULT 'public',
+  `category` VARCHAR(30) DEFAULT NULL,
+  `name` VARCHAR(30) NOT NULL,
 	`sold` TINYINT NOT NULL DEFAULT '0',
 	`container_id` LONGTEXT,
 
@@ -19,6 +22,7 @@ CREATE TABLE `vehicles` (
   `make` varchar(30) DEFAULT NULL,
   `model` varchar(30) NOT NULL,
   `price` int NOT NULL,
+  `type` VARCHAR(20) NOT NULL DEFAULT 'car',
   `category` varchar(30) DEFAULT NULL,
   `category_label` varchar(30) DEFAULT NULL,
   `fuel_type` varchar(10) DEFAULT "gasoline",

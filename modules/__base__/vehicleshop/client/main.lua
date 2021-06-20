@@ -17,12 +17,7 @@
 ------------------------------------------------------------------------
 
 M('events')
-M('serializable')
-M('cache')
-M('ui.menu')
 
-local Input = M('input')
-local HUD   = M('game.hud')
 local utils = M("utils")
 
 ------------------------------------------------------------------------
@@ -76,5 +71,9 @@ ESX.SetInterval(1, function()
     if IsControlJustReleased(0, 38) then
       module.TestDriveTime = 0
     end
+  end
+
+  if module.IsInShopMenu then
+    DisableControlAction(0,51,true)
   end
 end)

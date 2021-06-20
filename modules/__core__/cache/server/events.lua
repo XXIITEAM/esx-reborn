@@ -10,15 +10,3 @@
 --   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
-on('esx:startCache', function()
-  print("ensuring cache")
-
-  module.StartCache()
-
-  Wait(5000)
-  emit('esx:cacheReady')
-end)
-
-on('esx:saveCache', function()
-  module.SaveCache()
-end)

@@ -10,6 +10,10 @@
 --   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
+on('esx:characterLoaded', function()
+  module.CharacterLoaded = true
+end)
+
 on('ui.menu.mouseChange', function(value)
   if module.IsInGarageMenu then
     module.SetMouseIn(value)

@@ -18,7 +18,6 @@
 
 M('events')
 local Interact = M('interact')
-local HUD      = M('game.hud')
 local utils    = M("utils")
 local camera   = M("camera")
 
@@ -64,7 +63,9 @@ module.CurrentModel                  = nil
 module.CurrentPrice                  = nil
 module.CurrentPlate                  = nil
 module.CurrentDisplayVehicle         = nil
-module.CurrentSelectedPrimaryColor   = {r = 255, g = 0, b = 0}
+module.CurrentVehicle                = nil
+module.CurrentVehicle                = nil
+module.CurrentSelectedPrimaryColor   = {r = 0, g = 0, b = 0}
 module.CurrentSelectedSecondaryColor = {r = 0, g = 0, b = 0}
 module.VehicleLoaded                 = false
 
@@ -155,10 +156,11 @@ module.Init = function()
 
     on('vehicleshop:enteredZone', function()
       if not module.InTestDrive then
+        local ped = PlayerPedId()
         Interact.ShowHelpNotification(_U('vehicleshop:press_access'))
 
         module.CurrentAction = function()
-          if IsPedSittingInAnyVehicle(PlayerPedId()) then
+          if IsPedSittingInAnyVehicle(ped) then
             utils.ui.showNotification(_U('vehicleshop:already_in_vehicle'))
             return
           end
@@ -213,6 +215,10 @@ end
 module.OpenShopMenu = function()
   Interact.StopHelpNotification()
 
+  local ped = PlayerPedId()
+  
+  module.SavedPosition = GetEntityCoords(ped, true)
+
   if not module.DataInitiated then
     module.Vehicles = {}
 
@@ -225,24 +231,22 @@ module.OpenShopMenu = function()
         end
   
         module.Frame:postMessage({
-          type        = "initData",
-          sedans      = tonumber(#module.Vehicles["sedans"] + 1),
-          compact     = tonumber(#module.Vehicles["compacts"] + 1),
-          muscle      = tonumber(#module.Vehicles["muscle"] + 1),
-          sports      = tonumber(#module.Vehicles["sports"] + 1),
-          classics    = tonumber(#module.Vehicles["sportsclassics"] + 1),
-          super       = tonumber(#module.Vehicles["super"] + 1),
-          suvs        = tonumber(#module.Vehicles["suvs"] + 1),
-          offroad     = tonumber(#module.Vehicles["offroad"] + 1),
-          motorcycles = tonumber(#module.Vehicles["motorcycles"] + 1)
+          type           = "initData",
+          sedans         = tonumber(#module.Vehicles["sedans"]),
+          compact        = tonumber(#module.Vehicles["compacts"]),
+          muscle         = tonumber(#module.Vehicles["muscle"]),
+          sports         = tonumber(#module.Vehicles["sports"]),
+          sportsclassics = tonumber(#module.Vehicles["sportsclassics"]),
+          super          = tonumber(#module.Vehicles["super"]),
+          suvs           = tonumber(#module.Vehicles["suvs"]),
+          offroad        = tonumber(#module.Vehicles["offroad"]),
+          motorcycles    = tonumber(#module.Vehicles["motorcycles"])
         })
   
         module.DataInitiated = true
       end
     end)
   end
-
-  module.SavedPosition = GetEntityCoords(PlayerPedId(), true)
 
   DoScreenFadeOut(500)
 
@@ -252,9 +256,9 @@ module.OpenShopMenu = function()
 
   camera.start()
 
-  FreezeEntityPosition(PlayerPedId(), true)
-  SetEntityVisible(PlayerPedId(), false)
-  SetEntityCoords(PlayerPedId(), module.Config.ShopInside.Pos)
+  FreezeEntityPosition(ped, true)
+  SetEntityVisible(ped, false)
+  SetEntityCoords(ped, module.Config.ShopInside.Pos)
 
   module.MainCameraScene()
 
@@ -270,6 +274,8 @@ module.OpenShopMenu = function()
 end
 
 module.ExitShop = function()
+  local ped = PlayerPedId()
+
   module.DeleteDisplayVehicleInsideShop()
   module.CurrentCategory               = nil
   module.CurrentValue                  = nil
@@ -277,7 +283,8 @@ module.ExitShop = function()
   module.CurrentPrice                  = nil
   module.CurrentPlate                  = nil
   module.CurrentDisplayVehicle         = nil
-  module.CurrentSelectedPrimaryColor   = {r = 255, g = 0, b = 0}
+  module.CurrentVehicle                = nil
+  module.CurrentSelectedPrimaryColor   = {r = 0, g = 0, b = 0}
   module.CurrentSelectedSecondaryColor = {r = 0, g = 0, b = 0}
   module.VehicleLoaded                 = false
 
@@ -289,12 +296,12 @@ module.ExitShop = function()
   end
 
   if module.SavedPosition then
-    SetEntityCoords(PlayerPedId(), module.SavedPosition)
+    SetEntityCoords(ped, module.SavedPosition)
   else
-    SetEntityCoords(PlayerPedId(), module.Config.VehicleShopZones.Main.Center)
+    SetEntityCoords(ped, module.Config.VehicleShopZones.Main.Center)
   end
 
-  SetEntityVisible(PlayerPedId(), true)
+  SetEntityVisible(ped, true)
 
   camera.destroy()
 
@@ -303,7 +310,7 @@ module.ExitShop = function()
   module.IsInShopMenu = false
   emitServer('vehicleshop:exitedMenu')
 
-  FreezeEntityPosition(PlayerPedId(), false)
+  FreezeEntityPosition(ped, false)
 
   Citizen.Wait(1000)
   DoScreenFadeIn(500)
@@ -314,8 +321,9 @@ module.ExitShop = function()
 end
 
 module.MainCameraScene = function()
-  local pedCoords = GetEntityCoords(PlayerPedId())
-  local forward   = GetEntityForwardVector(PlayerPedId())
+  local ped       = PlayerPedId()
+  local pedCoords = GetEntityCoords(ped)
+  local forward   = GetEntityForwardVector(ped)
 
   camera.setRadius(2.5)
   camera.setCoords(pedCoords + forward * 1.25)
@@ -331,9 +339,11 @@ module.Frame:on('message', function(msg)
     module.ExitShop()
   elseif msg.action =="vehshop.changeTab" then
     module.DeleteDisplayVehicleInsideShop()
+    module.CurrentCategory               = tostring(msg.data.value)
+    module.CurrentVehicle                = nil
     module.CurrentDisplayVehicle         = nil
-    module.CurrentSelectedPrimaryColor   = 0
-    module.CurrentSelectedSecondaryColor = 0
+    module.CurrentSelectedPrimaryColor   = {r = 0, b = 0, g = 0}
+    module.CurrentSelectedSecondaryColor = {r = 0, g = 0, b = 0}
     module.VehicleLoaded                 = false
   elseif msg.action == "vehshop.testdrive" then
     module.PrepareTestDrive(module.CurrentModel)
@@ -347,7 +357,7 @@ module.Frame:on('message', function(msg)
     module.ChangeVehicle("muscle", msg.data.value)
   elseif msg.action == "vehshop.changeSports" then
     module.ChangeVehicle("sports", msg.data.value)
-  elseif msg.action == "vehshop.changeClassics" then
+  elseif msg.action == "vehshop.changeSportsClassics" then
     module.ChangeVehicle("sportsclassics", msg.data.value)
   elseif msg.action == "vehshop.changeSuper" then
     module.ChangeVehicle("super", msg.data.value)
@@ -423,7 +433,7 @@ module.SellVehicle = function()
       local displaytext = GetDisplayNameFromVehicleModel(model)
       local name = GetLabelText(displaytext)
 
-      request("vehicleshop:sellVehicle", function(result)
+      request("vehicles:sellVehicle", function(result)
         if result then
             DoScreenFadeOut(250)
 
@@ -461,19 +471,19 @@ module.BuyVehicle = function()
 
     utils.game.waitForVehicleToLoad(module.CurrentModel)
 
-    request('vehicleshop:buyVehicle', function(result)
+    request('vehicles:buyVehicle', function(result)
       if result then
         module.CurrentPlate = result.plate
         utils.ui.showNotification(_U('vehicleshop:buy_success', result.name, result.plate, result.price))
-        request('vehicleshop:spawnVehicle', function(result)
+        request('utils:spawnVehicle', function(result)
           if result then
             module.ExitShopAndEnterVehicle(result)
           end
-        end, module.CurrentModel)
+        end, module.CurrentModel, module.Config.ShopOutside.Pos, module.Config.ShopOutside.Heading)
       else
         utils.ui.showNotification("Error")
       end
-    end, module.CurrentCategory, module.CurrentValue, generatedPlate, name)
+    end, module.CurrentCategory, module.CurrentValue, generatedPlate, name, module.CurrentVehicle)
   end
 end
 
@@ -486,9 +496,7 @@ module.ExitShopAndEnterVehicle = function(result)
   DoScreenFadeOut(500)
 
   utils.game.requestModel(module.CurrentModel, function()
-
     RequestCollisionAtCoord(module.Config.ShopOutside.Pos)
-  
   end)
 
   utils.game.waitForVehicleToLoad(module.CurrentModel)
@@ -522,7 +530,7 @@ module.ExitShopAndEnterVehicle = function(result)
     SetVehicleDirtLevel(vehicle, 0.0)
 
     while not IsPedInVehicle(ped, vehicle, false) do
-      TaskWarpPedIntoVehicle(ped, vehicle, - 1)
+      TaskWarpPedIntoVehicle(ped, vehicle, -1)
       Wait(10)
     end
 
@@ -530,15 +538,14 @@ module.ExitShopAndEnterVehicle = function(result)
     SetEntityAsMissionEntity(vehicle, true, false)
     SetVehicleHasBeenOwnedByPlayer(vehicle, true)
     SetVehicleNeedsToBeHotwired(vehicle, false)
-    SetVehicleLivery(vehicle, 0)
     SetVehicleNumberPlateText(vehicle, module.CurrentPlate)
-    SetPedCanBeKnockedOffVehicle(ped,0)
-    SetPedCanRagdoll(ped,true)
-    SetEntityVisible(ped,true)
+    SetPedCanBeKnockedOffVehicle(ped, 0)
+    SetPedCanRagdoll(ped, true)
+    SetEntityVisible(ped, true)
 
     local vehicleProps = utils.game.getVehicleProperties(vehicle)
     
-    emitServer('vehicleshop:updateVehicle', module.CurrentPlate, vehicleProps)
+    emitServer('vehicles:updateVehicleProps', module.CurrentPlate, vehicleProps)
 
     Wait(500)
 
@@ -558,6 +565,11 @@ module.ExitShopAndEnterVehicle = function(result)
     module.CurrentPrice                  = nil
     module.CurrentPlate                  = nil
     module.CurrentDisplayVehicle         = nil
+    module.CurrentVehicle                = nil
+
+    emit('esx:identity:preventSaving', false)
+    module.IsInShopMenu = false
+    emitServer('vehicleshop:exitedMenu')
   end
 end
 
@@ -578,11 +590,11 @@ module.PrepareTestDrive = function(model)
 
   utils.game.waitForVehicleToLoad(model)
 
-  request('vehicleshop:spawnVehicle', function(result)
+  request('utils:spawnVehicle', function(result)
     if result then
       module.StartTestDrive(result)
     end
-  end, model)
+  end, model, module.Config.ShopOutside.Pos, module.Config.ShopOutside.Heading)
 end
 
 module.StartTestDrive = function(result)
@@ -630,7 +642,6 @@ module.StartTestDrive = function(result)
     SetEntityAsMissionEntity(vehicle, true, false)
     SetVehicleHasBeenOwnedByPlayer(vehicle, true)
     SetVehicleNeedsToBeHotwired(vehicle, false)
-    SetVehicleLivery(vehicle, 0)
     SetVehicleNumberPlateText(vehicle, "RENTAL")
     SetPedCanBeKnockedOffVehicle(ped,1)
     SetPedCanRagdoll(ped,false)
@@ -700,7 +711,7 @@ module.StartTestDrive = function(result)
 
       SetEntityCoordsNoOffset(vehicle, module.Config.ShopInside.Pos, 0, 0, 1)
       SetEntityHeading(vehicle, module.Config.ShopInside.Heading)
-      SetEntityVisible(PlayerPedId(), false)
+      SetEntityVisible(ped, false)
 
       Wait(500)
 
@@ -725,107 +736,117 @@ module.StartTestDrive = function(result)
 end
 
 module.ChangeVehicle = function(cat, val)
-  local category = tostring(cat)
-  local value = tonumber(val)
+  if not module.Busy then
+    module.Busy = true
+    local category = tostring(cat)
+    local value = tonumber(val)
 
-  module.DeleteDisplayVehicleInsideShop()
-  module.CurrentDisplayVehicle         = nil
-  module.CurrentSelectedPrimaryColor   = {r = 255, g = 0, b = 0}
-  module.CurrentSelectedSecondaryColor = {r = 0, g = 0, b = 0}
-  module.VehicleLoaded                 = false
+    module.DeleteDisplayVehicleInsideShop()
+    module.CurrentDisplayVehicle         = nil
+    module.CurrentVehicle                = nil
+    module.CurrentSelectedPrimaryColor   = {r = 0, g = 0, b = 0}
+    module.CurrentSelectedSecondaryColor = {r = 0, g = 0, b = 0}
+    module.VehicleLoaded                 = false
 
-  if value > 0 then
-    local name = tostring(module.Vehicles[cat][value].name)
-    local make = module.Vehicles[cat][value].make
-    local price = tostring(module.Vehicles[cat][value].price)
-    local model = tostring(module.Vehicles[cat][value].model)
-    local fuelType = tostring(module.Vehicles[cat][value].fuelType)
+    if value > 0 then
+      if module.Vehicles[category] then
+        if module.Vehicles[category][value] then
+          local ped      = PlayerPedId()
+          local name     = tostring(module.Vehicles[category][value].name)
+          local make     = module.Vehicles[category][value].make
+          local price    = tostring(module.Vehicles[category][value].price)
+          local model    = tostring(module.Vehicles[category][value].model)
+          local fuelType = tostring(module.Vehicles[category][value].fuelType)
+          module.CurrentVehicle = module.Vehicles[category][value]
 
-    if not make then
-      make = "unknown"
-    end
+          if not make then
+            make = "unknown"
+          end
 
-    module.CurrentCategory = category
-    module.CurrentValue    = value
-    module.CurrentModel    = model
-    module.CurrentPrice    = tonumber(price)
+          module.CurrentCategory = category
+          module.CurrentValue    = value
+          module.CurrentModel    = model
+          module.CurrentPrice    = tonumber(price)
 
-    utils.game.requestModel(model, function()
-      RequestCollisionAtCoord(module.Config.ShopOutside.Pos)
-    end)
+          utils.game.requestModel(model, function()
+            RequestCollisionAtCoord(module.Config.ShopOutside.Pos)
+          end)
 
-    utils.game.waitForVehicleToLoad(model)
+          utils.game.waitForVehicleToLoad(model)
 
-    utils.game.createLocalVehicle(model, module.Config.ShopInside.Pos, module.Config.ShopInside.Heading, function(vehicle)
+          utils.game.createLocalVehicle(model, module.Config.ShopInside.Pos, module.Config.ShopInside.Heading, function(vehicle)
 
-      module.CurrentDisplayVehicle         = vehicle
-      module.CurrentSelectedPrimaryColor   = {r = 255, g = 0, b = 0}
-      module.CurrentSelectedSecondaryColor = {r = 0, g = 0, b = 0}
+            module.CurrentDisplayVehicle = vehicle
 
-      while not DoesEntityExist(vehicle) do
-        Wait(100)
+            while not DoesEntityExist(vehicle) do
+              Wait(100)
+            end
+
+            module.ChangeColors("primary", 0, 0, 0)
+            module.ChangeColors("secondary", 0, 0, 0)
+            SetVehicleDirtLevel(module.CurrentDisplayVehicle, 0.0)
+
+            TaskWarpPedIntoVehicle(ped, vehicle, -1)
+            
+            FreezeEntityPosition(vehicle, true)
+
+            SetModelAsNoLongerNeeded(model)
+
+            module.VehicleLoaded = true
+          end)
+
+          while not module.VehicleLoaded do
+            Wait(100)
+          end
+
+          if IsPedSittingInAnyVehicle(ped) then
+            local vehicle = GetVehiclePedIsIn(ped, false)
+
+            while not DoesEntityExist(vehicle) do
+              Wait(100)
+            end
+
+            local mod               = GetEntityModel(vehicle, false)
+            local hash              = GetHashKey(mod)
+            local topSpeed          = GetVehicleMaxSpeed(vehicle) * 3.6
+            local acceleration      = GetVehicleModelAcceleration(mod)
+            local gears             = GetVehicleHighGear(vehicle)
+            local capacity          = GetVehicleMaxNumberOfPassengers(vehicle) + 1
+            local topSpeedStat      = (((topSpeed / module.Config.FastestVehicleSpeed) * 100))
+            local accelerationStat  = (((acceleration / module.Config.FastestVehicleAccel) * 100))
+            local gearsStat         = ((gears / module.Config.MaxGears) * 100)
+            local capacityStat      = ((capacity / module.Config.MaxCapacity) * 100)
+            local topSpeedLabel     = math.floor(topSpeed)
+            local accelerationLabel = string.format("%.2f", acceleration)
+            
+            module.Frame:postMessage({ 
+              type = "selectVehicle",
+              data = { make = make, model = model, name = name, price = price },
+              stats = { topSpeed = topSpeedStat, acceleration = accelerationStat, gears = gearsStat, capacity = capacityStat},
+              labels = {
+                topSpeedLabel     = topSpeedLabel,
+                accelerationLabel = accelerationLabel,
+                gearsLabel        = gears,
+                capacityLabel     = capacity,
+                fuelTypeStat      = fuelType
+              }
+            })
+          end
+        end
       end
-
-      module.ChangeColors("primary", 255, 0, 0)
-      module.ChangeColors("secondary", 0, 0, 0)
-      SetVehicleDirtLevel(module.CurrentDisplayVehicle, 0.0)
-
-      TaskWarpPedIntoVehicle(PlayerPedId(), vehicle, -1)
-      
-      FreezeEntityPosition(vehicle, true)
-
-      SetModelAsNoLongerNeeded(model)
-
-      module.VehicleLoaded = true
-    end)
-
-    while not module.VehicleLoaded do
-      Wait(100)
+    else
+      module.Frame:postMessage({ type = "removeVehicle"})
     end
 
-    if IsPedSittingInAnyVehicle(PlayerPedId()) then
-      local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
-
-      while not DoesEntityExist(vehicle) do
-        Wait(100)
-      end
-
-      local mod               = GetEntityModel(vehicle, false)
-      local hash              = GetHashKey(mod)
-      local topSpeed          = GetVehicleMaxSpeed(vehicle) * 3.6
-      local acceleration      = GetVehicleModelAcceleration(mod)
-      local gears             = GetVehicleHighGear(vehicle)
-      local capacity          = GetVehicleMaxNumberOfPassengers(vehicle) + 1
-      local topSpeedStat      = (((topSpeed / module.Config.FastestVehicleSpeed) * 100))
-      local accelerationStat  = (((acceleration / module.Config.FastestVehicleAccel) * 100))
-      local gearsStat         = ((gears / module.Config.MaxGears) * 100)
-      local capacityStat      = ((capacity / module.Config.MaxCapacity) * 100)
-      local topSpeedLabel     = math.floor(topSpeed)
-      local accelerationLabel = string.format("%.2f", acceleration)
-      
-      module.Frame:postMessage({ 
-        type = "selectVehicle",
-        data = { make = make, model = model, name = name, price = price },
-        stats = { topSpeed = topSpeedStat, acceleration = accelerationStat, gears = gearsStat, capacity = capacityStat},
-        labels = {
-          topSpeedLabel     = topSpeedLabel,
-          accelerationLabel = accelerationLabel,
-          gearsLabel        = gears,
-          capacityLabel     = capacity,
-          fuelTypeStat      = fuelType
-        }
-      })
-    end
-  else
-    module.Frame:postMessage({ type = "removeVehicle"})
-  end  
+    module.Busy = false
+  end
 end
 
 module.ChangeColors = function(category, r, g, b)
   if module.CurrentDisplayVehicle and module.VehicleLoaded then
     if category == "primary" then
       SetVehicleCustomPrimaryColour(module.CurrentDisplayVehicle, r, g, b)
-      module.CurrentSelectedPrimaryColor   = {r = r, g = g, b = b}      
+      module.CurrentSelectedPrimaryColor = {r = r, g = g, b = b}      
     else
       SetVehicleCustomSecondaryColour(module.CurrentDisplayVehicle, r, g, b)
       module.CurrentSelectedSecondaryColor = {r = r, g = g, b = b}
@@ -866,7 +887,8 @@ module.Exit = function()
   module.CurrentPrice                  = nil
   module.CurrentPlate                  = nil
   module.CurrentDisplayVehicle         = nil
-  module.CurrentSelectedPrimaryColor   = {r = 255, g = 0, b = 0}
+  module.CurrentVehicle                = nil
+  module.CurrentSelectedPrimaryColor   = {r = 0, g = 0, b = 0}
   module.CurrentSelectedSecondaryColor = {r = 0, g = 0, b = 0}
   Interact.StopHelpNotification()
 end
@@ -917,7 +939,7 @@ module.GeneratePlate = function()
         generatedPlate = string.upper(module.GetRandomLetter(module.Config.PlateLetters) .. module.GetRandomNumber(module.Config.PlateNumbers))
       end
 
-      request('vehicleshop:isPlateTaken', function(isPlateTaken)
+      request('vehicles:isPlateTaken', function(isPlateTaken)
         if not isPlateTaken then
           doBreak = true
         end

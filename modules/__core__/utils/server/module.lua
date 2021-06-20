@@ -13,12 +13,13 @@
 module.PlayersToHide = {}
 module.server = module.server or {}
 
+local CREATE_AUTOMOBILE = GetHashKey('CREATE_AUTOMOBILE')
+
 module.game.createVehicle = function (model, coords, heading, cb)
+
   if type(model) == 'string' then
     model = GetHashKey(model)
   end
-
-  local CREATE_AUTOMOBILE = GetHashKey('CREATE_AUTOMOBILE')
 
 	local vehicle = Citizen.InvokeNative(CREATE_AUTOMOBILE, model, coords, heading)
 
@@ -29,9 +30,11 @@ module.game.createVehicle = function (model, coords, heading, cb)
       ESX.ClearInterval(interval)
     end
   end)
-
+  
   if vehicle and cb then
     cb(vehicle)
+  else
+    cb(nil)
   end
 end
 

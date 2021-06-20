@@ -20,7 +20,6 @@ Config.FastestVehicleSpeed = 200 -- in MPH
 Config.FastestVehicleAccel = 0.5
 Config.MaxGears            = 8
 Config.MaxCapacity         = 8
-Config.ResellPercentage    = 50 -- in %
 Config.PlateLetters        = 3
 Config.PlateNumbers        = 3
 Config.PlateUseSpace       = true
