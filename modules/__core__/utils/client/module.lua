@@ -466,8 +466,6 @@ module.game.getVehicleProperties = function(vehicle)
       end
     end
 
-    print("Get Livery: " .. tostring(GetVehicleLivery(vehicle)))
-
     return {
 
       model             = GetEntityModel(vehicle),

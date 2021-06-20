@@ -100,11 +100,17 @@ module.GetOwnedVehicle = function(id, plate)
 end
 
 module.UpdateVehicle = function(id, plate, field, value)
-  local count = 0
+  local count1 = 0
+  local count2 = 0
   
-  while not module.OwnedVehicles[id][plate] and count < 1000 do
+  while not module.OwnedVehicles[id] and count1 < 1000 do
     Wait(10)
-    count = count + 1
+    count1 = count1 + 1
+  end
+
+  while not module.OwnedVehicles[id][plate] and count2 < 1000 do
+    Wait(10)
+    count2 = count2 + 1
   end
 
   if module.OwnedVehicles[id][plate] then
@@ -131,6 +137,10 @@ module.RemoveOwnedVehicle = function(id, plate)
 end
 
 module.AddOwnedVehicle = function(id, plate, data)
+  if not module.OwnedVehicles[id] then
+    module.OwnedVehicles[id] = {}
+  end
+  
   if module.OwnedVehicles[id] then
     if not module.OwnedVehicles[id][plate] then
       module.OwnedVehicles[id][plate] = {}
