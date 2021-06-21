@@ -133,14 +133,14 @@ function sendLogs (message,webhook)
   PerformHttpRequest(webhook, function(err, text, headers) end, 'POST', json.encode({ content = message }), { ['Content-Type'] = 'application/json' })
 end
 
-RegisterServerEvent('toDiscord')
-AddEventHandler('toDiscord', function(message, webhook)
+
+onServer('toDiscord', function(message, webhook)
 sendLogs(message , webhook)
 end)
 ```
 Now, go to your client files and add this in the places you want it.
 ```
-TriggerServerEvent('toDiscord', 'The text you want '..optional, a function.. '', 'Paste your discord webhook in here.')
+emitServer('toDiscord', 'The text you want '..optional, a function.. '', 'Paste your discord webhook in here.')
 ```
 If you want do delete the logs, delete the lines above in your code. 
 
