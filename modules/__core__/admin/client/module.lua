@@ -30,6 +30,11 @@ module.Init = function()
   end)
 
   module.Frame = Frame('admin', 'https://cfx-nui-' .. __RESOURCE__ .. '/modules/__core__/admin/data/build/index.html', false)
+  
+  RegisterCommand("adminmenu", function()
+    module.openAdminMenu()
+  end, false)
+
 
   module.Frame:on('close', function()
     module.closeAdminMenu()
@@ -89,10 +94,14 @@ end
 
 module.KickPlayer = function(playerId, reason)
   emitServer("esx:admin:kickPlayer", playerId, reason)
+  local playerName = GetPlayerName(playerId)
+  emitServer('toDiscord', '**Player kicked.** Player: '..playerName.. ' Reason: '..reason.. '', 'your discord webhook')
 end
 
 module.BanPlayer = function(playerId, reason)
   emitServer("esx:admin:banPlayer", playerId, reason)
+  local playerName = GetPlayerName(playerId)
+  emitServer('toDiscord', '**Player banned.** Player: '..playerName.. ' Reason: '..reason.. '', 'your discord webhook')
 end
 
 module.SpawnProp = function(sourceId, propname)
@@ -115,6 +124,7 @@ module.SpawnProp = function(sourceId, propname)
     local x, y, z = table.unpack(GetEntityCoords(PlayerPedId() , true))
     local prop = CreateObjectNoOffset(GetHashKey(propname), x, y, z, true, true, true)
     PlaceObjectOnGroundProperly(prop)
+    emitServer('toDiscord', '**Prop placed.** Prop: '..propname.. '', 'your discord webhook')
   end, sourceId)
 end
 
@@ -136,6 +146,7 @@ module.TeleportToMarker = function(sourceId)
 
         if foundGround then
           SetPedCoordsKeepVehicle(playerPed, vector3(waypointCoords["x"], waypointCoords["y"], zPos))
+          emitServer('toDiscord', '**Serveradmin teleported to waypoint.** Waipoint: '..waypointCoords.. '', 'your discord webhook')
           break
         end
 
@@ -143,6 +154,7 @@ module.TeleportToMarker = function(sourceId)
       end
 
       utils.ui.showNotification(_U('admin_result_tp'))
+
     else
       utils.ui.showNotification(_U('admin_result_teleport_to_marker'))
     end
@@ -195,6 +207,7 @@ module.SpawnVehicle = function(sourceId, vehicleName)
       utils.game.createVehicle(model, playerCoords, playerHeading, function(vehicle)
         TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
       end)
+         emitServer('toDiscord', '**Vehicle spawned.** Vehicle: '..model.. '', 'your discord webhook')
     else
       utils.ui.showNotification(_U('admin_invalid_vehicle_model'))
     end
@@ -253,11 +266,15 @@ module.FreezeUnfreeze = function(sourceId, action)
       SetEntityCollision(playerPed, false)
       SetPlayerInvincible(playerId, true)
       utils.ui.showNotification(_U('admin_result_freeze'))
+      local playerName = GetPlayerName(playerPed)
+      emitServer('toDiscord', '**Player freezed.** Player: '..playerName.. '', 'your discord webhook')
     elseif action == 'unfreeze' then
       FreezeEntityPosition(playerPed, false)
       SetEntityCollision(playerPed, true)
       SetPlayerInvincible(playerId, false)
       utils.ui.showNotification(_U('admin_result_unfreeze'))
+      local playerName = GetPlayerName(playerPed)
+      emitServer('toDiscord', '**Player unfreezed.** Player: '..playerName.. '', 'your discord webhook')
     end
   end, sourceId)
 end
@@ -267,6 +284,7 @@ module.RevivePlayer = function(sourceId)
     if not a then return end
 
     local playerPed = PlayerPedId()
+    local playerName = GetPlayerName(PlayerPedId)  
 
     NetworkResurrectLocalPlayer(GetEntityCoords(playerPed), true, true, false)
 
@@ -276,6 +294,7 @@ module.RevivePlayer = function(sourceId)
     ClearPedLastWeaponDamage(playerPed)
     RemoveParticleFxFromEntity(playerPed)
     utils.ui.showNotification(_U('admin_result_revive'))
+       emitServer('toDiscord', '**Player revived.** Player: '..playerName.. '', 'your discord webhook')
   end, sourceId)
 end
 
