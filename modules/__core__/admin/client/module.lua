@@ -30,10 +30,7 @@ module.Init = function()
   end)
 
   module.Frame = Frame('admin', 'https://cfx-nui-' .. __RESOURCE__ .. '/modules/__core__/admin/data/build/index.html', false)
-  
-  RegisterCommand("adminmenu", function()
-    module.openAdminMenu()
-  end, false)
+
 
 
   module.Frame:on('close', function()
