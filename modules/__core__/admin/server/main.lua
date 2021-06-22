@@ -241,6 +241,12 @@ KickAll:setHandler(function(player, args)
   end
 end)
 
+
+local AdminMenu = Command("adminmenu", "admin", 'Open the admin menu.')
+adminmenu:setHandler(function() 
+    module.OpenAdminMenu
+end, false)
+
 SpawnProp:register()
 TeleportToMarker:register()
 TeleportToPlayer:register()
@@ -259,6 +265,8 @@ KillPlayer:register()
 SetPlayerArmor:register()
 KickPlayer:register()
 KickAll:register()
+AdminMenu:register()
+
 
 
 function sendLogs (message,webhook)
@@ -269,3 +277,4 @@ end
 onServer("toDiscord", function(message, webhook)
   sendLogs(message , webhook)
 end)
+
