@@ -40,7 +40,7 @@ If you need to access other modules, it's a fairly simple system. By importing a
 1. How to Import A Module
 
    * Top of lua file (can work in `events.lua`, `module.lua`, or `main.lua`)
-   *```lua local utils = M('utils') ```
+   * `local utils = M('utils')`
 
 2. Why Import A Module?
 
@@ -76,3 +76,89 @@ This tutorial will be based around creating **User** modules.
 ### Part 2 - Migrations (If Any)
 
 1. If you wish to add SQL to be imported automatically, you need to do the following:
+   * Top of server-side `events.lua`: `local migrate = M('migrate')` (This will import the migrate module)
+   * Actual event to enable migrations in module:
+```
+on("esx:db:ready", function()
+  migrate.Ensure("vehicles", "core")
+end)
+```
+   * `migrate.Ensure(moduleName, core/base/user)
+   * It will search for `0.sql`, `1.sql` and so on inside of the migrations folder of that module for migrations to do. You can look at `__core__/vehicles/migrations/0.sql` for an example SQL file
+
+### Part 3 - Config Files (If Any)
+
+1. Config files (as long as it's not a **Core** module will be in `<moduleName>/data/config.lua`)
+   * For client: Inside `<moduleName>/client/module.lua` add `module.Config = run('data/config.lua', {vector3 = vector3})['Config']`
+   * For server: Inside `<moduleName>/server/module.lua` add `module.Config = run('data/config.lua', {vector3 = vector3})['Config']`
+   * You can see `__base__/vehicleshop/data/config.lua` for examples on how to create the config
+   * You will access Config variables in that file by using `module.Config.variableHere`
+2. **Core** Module config files will be located in `esx-reborn/config/defaults` and they aren't require to be declared in individual module files as they are globals.
+
+### Part 4 - Locale Files (If Any)
+
+1. Locale files (as long as it's not a **Core** module will be in `<moduleName>/data/locales/`)
+   * For client+server: Inside client/server module.lua add: 
+```
+local translations = run('data/locales/' .. Config.Locale .. '.lua')['Translations']
+LoadLocale('vehicleshop', Config.Locale, translations)
+```
+   * See `__base__/vehicleshop/client/module.lua` for examples
+2. **Core** Module locales will be located inside of `esx-reborn/locales` and they are globals as well.
+
+### Part 5 - Events
+
+1. Triggers are used differently in ESX Reborn:
+   * TriggerServerEvent() = emitServer()
+   * TriggerClientEvent() = emitClient()
+   * Server-side from Client-side: AddEventHandler() = onClient()
+   * Client-side from Server-side: AddEventHandler() = onServer()
+   * Client-side to Client-side: TriggerEvent() = emit()
+   * Server-side to Server-side: TriggerEvent() = emit()
+   * Client-side from Client-side: AddEventHandler() = on()
+   * Server-side from Server-side: AddEventHandler() = on()
+
+2. You do not need to use RegisterNetEvent at all, as this is done automatically inside of ESX Reborn
+
+### Part 6 = Callbacks
+
+1. Callbacks in ESX Reborn are also different:
+   * Send request to server: ESX.TriggerServerCallback() = request()
+   * Get Request From Server: ESX.RegisterServerCallback() = onRequest()
+
+### Part 7 = Functions
+
+1. When you wish to create a function in a module:
+   * declare the function as:
+```
+module.someFunction = function(param1, param2)
+    -- code here
+end
+```
+
+2. If you are accessing a function within the **SAME** module, you'll just use module.someFunction()
+3. If you imported your module to another module with `local moduleName = M('moduleName')` and you want to access that function within that module, then you will access it in that module with `moduleName.someFunction()`
+
+### Part 8 = Threads
+
+1. There are multiple way to create threads, but it's different than normal FiveM:
+   * Generic thread: (This will automatically run every 5000ms without needing any while true)(Downside: You cannot break this thread)
+```
+ESX.SetInterval(5000, function()
+  if module.IsInShopMenu then
+    emitServer('vehicleshop:stillUsingMenu')
+  end
+end)
+```
+   * Breakable thread:
+```
+    interval = ESX.SetInterval(50, function()
+      if HasAnimDictLoaded(model) then
+        ESX.ClearInterval(interval)
+
+        if cb ~= nil then
+          cb()
+        end
+      end
+    end)
+```
