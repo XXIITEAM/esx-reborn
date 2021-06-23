@@ -33,6 +33,20 @@ In each module folder (`__core__`,`__base__`,`__user__`) there is a `modules.jso
 
 In each module folder, if you need SQL for that module (most of the ESX Reborn SQL is declared in the core modules, but you can do these in Base and User Modules as well) it will search each module for the 0.sql, 1.sql and so on in the migrations folder for that module. (There is code that you need to add to the server-side events.lua in order for it to migrate)
 
+### Importing Already Existing Modules
+
+If you need to access other modules, it's a fairly simple system. By importing a module, you will gain access to that modules functions. For this example I will use a shared functions in `utils/shared/module.lua`: `module.string.random(length, recurse)` (Please note that you can only access client-side functions in client-side, and server-side functions in server-side, shared you can do both, provided you aren't doing anything that requires server-side only, or client-side only)
+
+1. How to Import A Module
+
+   * Top of lua file (can work in `events.lua`, `module.lua`, or `main.lua`)
+   *```lua local utils = M('utils') ```
+
+2. Why Import A Module?
+
+   * By importing a module, you gain access to all of that modules functions.
+   * In the module itself, it will be created in the original module as `module.someFunction = function()`, but when you access it by importing it into other modules, since you declared it as `local utils = M('utils')` in your module you will access it with `utils.someFunction()`
+
 ### What's Different About Core Modules and Base Modules?
 
 Core modules are not intended to be edited unless you have a more proficient knowledge of ESX Reborn. The config files and locale code is contained within the root ESX Reborn folders, and is not accessed the same way as base modules.
@@ -59,3 +73,6 @@ This tutorial will be based around creating **User** modules.
 2. After you create the folder, you want to create the client and server folders, and add the empty `module.lua`, `main.lua`, and `events.lua` inside of each folder.
    * It would look like this: `esx-reborn/modules/__user__/<moduleName>/client/module.lua` and so on.
 
+### Part 2 - Migrations (If Any)
+
+1. If you wish to add SQL to be imported automatically, you need to do the following:
