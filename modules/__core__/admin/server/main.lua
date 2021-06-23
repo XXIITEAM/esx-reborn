@@ -242,11 +242,6 @@ KickAll:setHandler(function(player, args)
 end)
 
 
-local AdminMenu = Command("adminmenu", "admin", 'Open the admin menu.')
-adminmenu:setHandler(function() 
-    module.OpenAdminMenu
-end, false)
-
 SpawnProp:register()
 TeleportToMarker:register()
 TeleportToPlayer:register()
@@ -265,7 +260,6 @@ KillPlayer:register()
 SetPlayerArmor:register()
 KickPlayer:register()
 KickAll:register()
-AdminMenu:register()
 
 
 
