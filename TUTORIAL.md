@@ -52,7 +52,7 @@ This tutorial will be based around creating **User** modules.
 
 ### Part 1 - Creating A Module
 
-https://i.iodine.gg/ac23b.png
+![Folder Structure](https://i.iodine.gg/ac23b.png)
 
 1. When you want to create a new module, the first step is to create the module folder inside of `__user__` folder.
 
