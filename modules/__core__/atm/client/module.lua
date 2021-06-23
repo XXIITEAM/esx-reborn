@@ -11,49 +11,66 @@
 --   This copyright should appear in every part of the project code
 
 M('events')
+
+
 module.Ready = false
-module.Frame = nil
+module.Frame = Frame('atm', 'https://cfx-nui-' .. __RESOURCE__ .. '/modules/__core__/atm/data/html/index.html', true)
 
-local atmOpen = false
-
-onServer('esx:atm:visibility', function()
-  if not atmOpen then
-    atmOpen = true
-    module.Frame:postMessage({
-      method = 'setVisibility',
-      data = atmOpen
-    })
-    module.Frame:focus()
-    SetNuiFocus(true, true)
-  else
-    atmOpen = false;
-    module.Frame:postMessage({
-      method = 'setVisibility',
-      data = atmOpen
-    })
-    SetNuiFocus(false, false)
-  end
-end)
--- Callbacks for each function
-
-RegisterNUICallback('esx:atm:deposit', function(data)
-  emitServer('esx:atm:depositMoney', data.amount)
+module.Frame:on('load', function()
+    module.Ready = true
 end)
 
-RegisterNUICallback('esx:atm:withdraw', function(data)
-  emitServer('esx:atm:withdrawMoney', data.amount)
-  --print('amount: ', data.amount)
+module.Frame:on('withdraw', function(data)
+  emitServer('esx:atm:withdrawMoney', data.account, data.quantity)
 end)
 
-RegisterNUICallback('esx:atm:transfer', function(data)
-    emitServer('esx:atm:transferMoney', data.amount, data.playerId)
+module.Frame:on('deposit', function(data)
+  emitServer('esx:atm:depositMoney', data.account, data.quantity)
 end)
 
-RegisterNUICallback('esx:atm:close', function ()
-  atmOpen = false;
+module.Frame:on('transfer', function(data)
+  emitServer('esx:atm:transferMoney', data.account, data.quantity, data.targetPlayer, data.targetAccount)
+end)
+
+module.Frame:on('close', function(data)
+  module.Frame:unfocus()
+  emit('esx:atm:close')
+end)
+
+
+
+
+
+module.OpenATM = function(accounts, type)
+
   module.Frame:postMessage({
-    method = 'setVisibility',
-    data = false
+      method = 'setData',
+      data = {
+          theme = type,
+          accounts = accounts
+      }
   })
-  SetNuiFocus(false, false)
-end)
+
+  module.Frame:postMessage({
+    method = 'open'
+  })
+
+  module.Frame:focus(true,true)
+
+end
+
+
+
+module.SendResult = function (action, result, newAccounts, msgError)
+
+  module.Frame:postMessage({
+    method = 'sendResult',
+    data = {
+      action = action,
+      result = result,
+      newAccounts = newAccounts or {},
+      msgError = msgError or ''
+    }
+  })
+
+end

@@ -109,8 +109,8 @@ LoadLocale('vehicleshop', Config.Locale, translations)
 ### Part 5 - Events
 
 1. Triggers are used differently in ESX Reborn:
-   * **Client-side to Server-side:** TriggerServerEvent() = `emitServer()`
-   * **Server-side to Client-side:** TriggerClientEvent() = `emitClient()`
+   * **Client-side to Server-side:** `TriggerServerEvent()` = `emitServer()`
+   * **Server-side to Client-side:** `TriggerClientEvent()` = `emitClient()`
    * **Server-side from Client-side:** `AddEventHandler()` = `onClient()`
    * **Client-side from Server-side:** `AddEventHandler()` = `onServer()`
    * **Client-side to Client-side:** `TriggerEvent()` = `emit()`

@@ -19,9 +19,11 @@
 --    utils.ui.showNotification("Money deposited")
 --end)
 
-module.Frame = Frame('atm', 'https://cfx-nui-' .. __RESOURCE__ .. '/modules/__core__/atm/data/html/index.html', true)
-
-module.Frame:on('load', function()
-    module.Ready = true
+onServer('esx:atm:open', function(accounts, type)
+  module.OpenATM(accounts, type)
 end)
 
+
+onServer('esx:atm:sendResult', function(action, result, newAccounts, msgError)
+  module.SendResult(action, result, newAccounts, msgError)
+end)

@@ -10,15 +10,23 @@
 --   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
+onClient('esx:atm:open', function(type)
 
-onClient('esx:atm:depositMoney', function(amount)
-  module.depositMoney(amount)
+  local player = Player.fromId(source)
+  local identity = player:getIdentity()
+  local accounts = identity:getAccounts()
+
+  emitClient('esx:atm:open', player.source, accounts:serialize(), type)
 end)
 
-onClient('esx:atm:withdrawMoney', function(amount)
-  module.withdrawMoney(amount)
+onClient('esx:atm:depositMoney', function(account, amount)
+  module.DepositMoney(source, account, amount)
 end)
 
-onClient('esx:atm:transferMoney', function(amount, playerId)
-  module.transferMoney(amount, playerId)
+onClient('esx:atm:withdrawMoney', function(account, amount)
+  module.WithdrawMoney(source, account, amount)
+end)
+
+onClient('esx:atm:transferMoney', function(account, amount, targetPlayer, targetAccount)
+  module.TransferMoney(source, account, amount, targetPlayer, targetAccount)
 end)

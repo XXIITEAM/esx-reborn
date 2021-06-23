@@ -10,4 +10,16 @@
 --   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
-module.init()
+M('command')
+
+local OpenATM = Command("atm", "user", _U('admin_command_spawn_prop'))
+OpenATM:setHandler(function(player, args)
+
+  local player = Player.fromId(player.source)
+  local identity = player:getIdentity()
+  local accounts = identity:getAccounts()
+  emitClient('esx:atm:open', player.source, accounts:serialize(), "atm")
+end)
+
+
+OpenATM:register()

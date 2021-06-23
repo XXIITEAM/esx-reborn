@@ -1,0 +1,58 @@
+@font-face {
+    font-family: ChaletLondon;
+    src: url('../fonts/coolvetica.ttf');
+}
+
+html {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    user-select: none;
+}
+
+body {
+    position: absolute;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
+.crosshair {
+    position: fixed;
+    /* or absolute */
+    top: 50%;
+    left: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 2vw;
+    height: 1.5vh;
+}
+
+#info img {
+    position: fixed;
+    top: 53.2%;
+    left: 50%;
+    width: 0.7vw;
+    height: 1.6vh;
+}
+
+#span1 {
+    position: fixed;
+    top: 53%;
+    left: 51%;
+    color: lightgreen;
+    font-size: 1.6vh;
+    font-weight: bold;
+    font-family: ChaletLondon;
+}
+
+#span2 {
+    position: fixed;
+    top: 55%;
+    left: 51%;
+    font-size: 1.6vh;
+    color: white;
+    font-weight: bold;
+}
