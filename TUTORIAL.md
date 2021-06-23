@@ -109,14 +109,14 @@ LoadLocale('vehicleshop', Config.Locale, translations)
 ### Part 5 - Events
 
 1. Triggers are used differently in ESX Reborn:
-   * TriggerServerEvent() = emitServer()
-   * TriggerClientEvent() = emitClient()
-   * Server-side from Client-side: AddEventHandler() = onClient()
-   * Client-side from Server-side: AddEventHandler() = onServer()
-   * Client-side to Client-side: TriggerEvent() = emit()
-   * Server-side to Server-side: TriggerEvent() = emit()
-   * Client-side from Client-side: AddEventHandler() = on()
-   * Server-side from Server-side: AddEventHandler() = on()
+   * **Client-side to Server-side:** TriggerServerEvent() = `emitServer()`
+   * **Server-side to Client-side:** TriggerClientEvent() = `emitClient()`
+   * **Server-side from Client-side:** `AddEventHandler()` = `onClient()`
+   * **Client-side from Server-side:** `AddEventHandler()` = `onServer()`
+   * **Client-side to Client-side:** `TriggerEvent()` = `emit()`
+   * **Server-side to Server-side:** `TriggerEvent()` = `emit()`
+   * **Client-side from Client-side:** `AddEventHandler()` = `on()`
+   * **Server-side from Server-side:** `AddEventHandler()` = `on()`
 
 2. You do not need to use RegisterNetEvent at all, as this is done automatically inside of ESX Reborn
 
@@ -150,7 +150,7 @@ ESX.SetInterval(5000, function()
   end
 end)
 ```
-   * Breakable thread:
+   * Breakable thread: (Will run every 50ms, until ESX.ClearInterval(interval) is run)
 ```
     interval = ESX.SetInterval(50, function()
       if HasAnimDictLoaded(model) then
