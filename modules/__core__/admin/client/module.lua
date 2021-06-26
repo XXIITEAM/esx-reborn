@@ -267,14 +267,13 @@ module.FreezeUnfreeze = function(sourceId, action)
 
     local playerPed = PlayerPedId()
     local playerId = PlayerId()
-    local playerName = GetPlayerName(PlayerId)
+    local playerName = GetPlayerName(playerId)
 
     if action == 'freeze' then
       FreezeEntityPosition(playerPed, true)
       SetEntityCollision(playerPed, false)
       SetPlayerInvincible(playerId, true)
       utils.ui.showNotification(_U('admin_result_freeze'))
-      local playerName = GetPlayerName(playerPed)
       if Config.Module.Admin.useDiscordLogs then
         emitServer('toDiscord', '**Player freezed.** Player: '..playerName.. '', Config.Modules.Admin.discordLogsWebhook)
       end
@@ -283,7 +282,6 @@ module.FreezeUnfreeze = function(sourceId, action)
       SetEntityCollision(playerPed, true)
       SetPlayerInvincible(playerId, false)
       utils.ui.showNotification(_U('admin_result_unfreeze'))
-      local playerName = GetPlayerName(playerPed)
       if Config.Module.Admin.useDiscordLogs then
         emitServer('toDiscord', '**Player unfreezed.** Player: '..playerName.. '', Config.Modules.Admin.discordLogsWebhook)
       end
