@@ -294,7 +294,7 @@ module.RevivePlayer = function(sourceId)
     if not a then return end
 
     local playerPed = PlayerPedId()
-    local playerName = GetPlayerName(PlayerPedId)  
+    local playerName = GetPlayerName(PlayerPed)  
 
     NetworkResurrectLocalPlayer(GetEntityCoords(playerPed), true, true, false)
 

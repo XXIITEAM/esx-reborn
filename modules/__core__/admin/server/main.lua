@@ -268,7 +268,6 @@ function sendLogs (message,webhook)
   PerformHttpRequest(webhook, function(err, text, headers) end, 'POST', json.encode({ content = message }), { ['Content-Type'] = 'application/json' })
 end
 
-onServer("toDiscord", function(message, webhook)
+on("toDiscord", function(message, webhook)
   sendLogs(message , webhook)
 end)
-
