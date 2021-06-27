@@ -26,12 +26,11 @@
       window.addEventListener('mousewheel',  e => this.onMouseWheel(e));
       window.addEventListener('contextmenu', e => this.onContextMenu(e));
 
-      window.NUICallback = (name, data = {}, asJSON = false) => this.NUICallback(name, data, asJSON);
-      
+      window.NUICallback = this.NUICallback;
     }
 
     postFrameMessage(msg) {
-      
+
       if(window.__ESXROOT__)
         window.__ESXROOT__.postFrameMessage('__root__', msg);
       else
@@ -40,7 +39,7 @@
 
     async NUICallback(name, data = {}, asJSON = false) {
 
-      const res = await fetch('http://' + this.resName + '/' + name, {
+      const res = await fetch(`https://${this.resName}/${name}`, {
         method: 'POST',
         headers: {
           'Accept'      : 'application/json',
