@@ -62,9 +62,10 @@ end
 
 module.SendLogs = function(message,webhook)
   if message == nil or message == '' then return false end
+
   if webhook then
     PerformHttpRequest(webhook, function(err, text, headers) end, 'POST', json.encode({ content = message }), { ['Content-Type'] = 'application/json' })
   else
-	return false
+	  return false
   end
 end
