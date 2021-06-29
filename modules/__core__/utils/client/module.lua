@@ -12,32 +12,6 @@
 --
 -----
 --
--- Following license apply for entityEnumerator and EnumerateEntities:
---
--- The MIT License (MIT)
---
--- Copyright (c) 2017 IllidanS4
--- Permission is hereby granted, free of charge, to any person
--- obtaining a copy of this software and associated documentation
--- files (the "Software"), to deal in the Software without
--- restriction, including without limitation the rights to use,
--- copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the
--- Software is furnished to do so, subject to the following
--- conditions:
--- The above copyright notice and this permission notice shall be
--- included in all copies or substantial portions of the Software.
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
--- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
--- OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
--- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
--- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
--- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
--- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
--- OTHER DEALINGS IN THE SOFTWARE.
---
------
---
 -- Following license apply for windPnPoly and isLeft:
 --
 -- The MIT License (MIT)
@@ -87,96 +61,6 @@ module.CurrentModifier      = nil
 module.CharacterLoaded      = false
 module.ControlsEnabled      = false
 
--- Locals
-local entityEnumerator = {
-
-  __gc = function(enum)
-
-    if enum.destructor and enum.handle then
-      enum.destructor(enum.handle)
-    end
-
-    enum.destructor = nil
-    enum.handle     = nil
-
-  end
-}
-
-local EnumerateEntities = function(initFunc, moveFunc, disposeFunc)
-
-  return coroutine.wrap(function()
-
-    local iter, id = initFunc()
-
-    if not id or id == 0 then
-      disposeFunc(iter)
-      return
-    end
-
-    local enum = {handle = iter, destructor = disposeFunc}
-
-    setmetatable(enum, entityEnumerator)
-
-    local next = true
-
-    repeat
-      coroutine.yield(id)
-      next, id = moveFunc(iter)
-    until not next
-
-    enum.destructor, enum.handle = nil, nil
-
-    disposeFunc(iter)
-
-  end)
-end
-
-module.game.enumerateEntitiesWithinDistance = function(entities, isPlayerEntities, coords, maxDistance)
-  local nearbyEntities = {}
-
-  if coords then
-    coords = vector3(coords.x, coords.y, coords.z)
-  else
-    local playerPed = PlayerPedId()
-    coords = GetEntityCoords(playerPed)
-  end
-
-  for k,entity in pairs(entities) do
-    local distance = #(coords - GetEntityCoords(entity))
-
-    if distance <= maxDistance then
-      table.insert(nearbyEntities, isPlayerEntities and k or entity)
-    end
-  end
-
-  return nearbyEntities
-end
-
--- Game
-module.game.enumerateObjects = function()
-  return EnumerateEntities(FindFirstObject, FindNextObject, EndFindObject)
-end
-
-EnumerateObjects = module.game.enumerateObjects -- Make it global for convenience
-
-module.game.enumeratePeds = function()
-  return EnumerateEntities(FindFirstPed, FindNextPed, EndFindPed)
-end
-
-EnumeratePeds = module.game.enumeratePeds -- Make it global for convenience
-
-module.game.enumerateVehicles = function()
-  return EnumerateEntities(FindFirstVehicle, FindNextVehicle, EndFindVehicle)
-end
-
-EnumerateVehicles = module.game.enumerateVehicles -- Make it global for convenience
-
-module.game.enumeratePickups = function()
-  return EnumerateEntities(FindFirstPickup, FindNextPickup, EndFindPickup)
-end
-
-EnumeratePickups = module.game.enumeratePickups -- Make it global for convenience
-
 -- Wind Around Point Poly
 module.game.windPnPoly = function(tablePoints, flag)
   if tostring(type(flag)) == table then
@@ -220,6 +104,7 @@ module.game.isLeft = function(p1s, p2s, flag)
             - ((p2.x -  p.x) * (p1.y - p.y)) )
 end
 
+-- Game
 module.game.requestModel = function(model, cb)
 
   if type(model) == 'string' then
@@ -405,45 +290,129 @@ module.game.isVehicleEmpty = function(vehicle)
 
 end
 
-module.game.getVehicles = function()
-  local vehicles = {}
 
-  for vehicle in EnumerateVehicles() do
-    table.insert(vehicles, vehicle)
-  end
-
-  return vehicles
+-- Enumerate entities
+module.game.getNearbyEntities = function(entities, coords, modelFilter, maxDistance, isPed)
+	local nearbyEntities = {}
+	coords = coords and vector3(coords.x, coords.y, coords.z) or GetEntityCoords(PlayerPedId())
+	for k, entity in pairs(entities) do
+		if not isPed or (isPed and not IsPedAPlayer(entity)) then
+			if not modelFilter or modelFilter[GetEntityModel(entity)] then
+				local entityCoords = GetEntityCoords(entity)
+				if not maxDistance or #(coords - entityCoords) <= maxDistance then
+					table.insert(nearbyEntities, {entity=entity, coords=entityCoords})
+				end
+			end
+		end
+	end
+	
+	return nearbyEntities
 end
 
-module.game.getPeds = function(onlyOtherPeds)
-  local peds, myPed = {}, PlayerPedId()
+module.game.getClosestEntity = function(entities, coords, modelFilter, maxDistance, isPed)
+	local distance, closestEntity, closestCoords = maxDistance or 100
+	coords = coords and vector3(coords.x, coords.y, coords.z) or GetEntityCoords(PlayerPedId())
 
-  for ped in EnumeratePeds() do
-    if ((onlyOtherPeds and ped ~= myPed) or not onlyOtherPeds) then
-      table.insert(peds, ped)
-    end
-  end
-
-  return peds
+	for k, entity in pairs(entities) do
+		if not isPed or (isPed and not IsPedAPlayer(entity)) then
+			if not modelFilter or modelFilter[GetEntityModel(entity)] then
+				local entityCoords = GetEntityCoords(entity)
+				local dist = #(coords - entityCoords)
+				if dist < distance then
+					closestEntity, distance, closestCoords = entity, dist, entityCoords
+				end
+			end
+		end
+	end
+	return closestEntity, distance, closestCoords
 end
 
-module.game.getVehiclesInArea = function(coords, maxDistance)  
-  return module.game.enumerateEntitiesWithinDistance(module.game.getVehicles(), false, coords, maxDistance) 
+module.game.getPlayers = function(includePlayer, closest, coords, distance)
+	local players, playerId = {}, PlayerId()
+	local distance = distance or 100
+	if type then coords = coords and vector3(coords.x, coords.y, coords.z) or GetEntityCoords(PlayerPedId()) end
+	
+	for k, player in pairs(GetActivePlayers()) do
+		if includePlayer or player ~= playerId then
+			if type == nil then
+				table.insert(players, {id = player, ped = GetPlayerPed(player)})
+			else
+				local entity = GetPlayerPed(player)
+				local entityCoords = GetEntityCoords(entity)
+				if not closest then
+					if #(coords - entityCoords) <= distance then
+						table.insert(players, {id = player, ped = entity, coords = entityCoords})
+					end
+				else
+					local dist = #(coords - entityCoords)
+					if dist <= players.dist or distance then
+						players = {id = player, ped = entity, coords = entityCoords, distance = dist}
+					end
+				end
+			end
+		end
+	end
+	
+	return players
 end
 
-module.game.getVehicleInDirection = function()
-  
-  local playerPed    = PlayerPedId()
-  local playerCoords = GetEntityCoords(playerPed)
-  local inDirection  = GetOffsetFromEntityInWorldCoords(playerPed, 0.0, 5.0, 0.0)
-  local rayHandle    = StartShapeTestRay(playerCoords, inDirection, 10, playerPed, 0)
-  local numRayHandle, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
 
-  if hit == 1 and GetEntityType(entityHit) == 2 then
-    return entityHit
-  end
+-- Get entities in area
+module.game.getPlayersInArea = function(includePlayer, coords, maxDistance)
+	return module.game.getPlayers(includePlayer, false, coords, maxDistance) 
+end
 
-  return nil
+module.game.getPedsInArea = function(coords, maxDistance, modelFilter)
+	return module.game.getNearbyEntities(GetGamePool('CPed'), coords, modelFilter, true) 
+end
+
+module.game.getObjectsInArea = function(coords, maxDistance, modelFilter)
+	return module.game.getNearbyEntities(GetGamePool('CObject'), coords, modelFilter, maxDistance) 
+end
+
+module.game.getVehiclesInArea = function(coords, maxDistance, modelFilter)
+	return module.game.getNearbyEntities(GetGamePool('CVehicle'), coords, modelFilter, maxDistance) 
+end
+
+module.game.getPickupsInArea = function(coords, maxDistance, modelFilter)  
+	return module.game.getNearbyEntities(GetGamePool('CPickup'), coords, modelFilter, maxDistance) 
+end
+
+-- Get closest entity of type
+module.game.getClosestPlayer = function(includePlayer, coords, maxDistance)
+	return module.game.getPlayers(includePlayer, true, coords, maxDistance) 
+end
+
+module.game.getClosestPed = function(coords, maxDistance, modelFilter)
+	return module.game.getClosestEntity(GetGamePool('CPed'), coords, modelFilter, maxDistance, true)
+end
+
+module.game.getClosestObject = function(coords, maxDistance, modelFilter)
+	return module.game.getClosestEntity(GetGamePool('CObject'), coords, modelFilter, maxDistance)
+end
+
+module.game.getClosestVehicle = function(coords, maxDistance, modelFilter)
+	return module.game.getClosestEntity(GetGamePool('CVehicle'), coords, modelFilter, maxDistance)
+end
+
+module.game.getClosestPickup = function(coords, maxDistance, modelFilter)
+	return module.game.getClosestEntity(GetGamePool('CPickup'), coords, modelFilter, maxDistance)
+end
+
+module.game.getEntityFacing = function(type)  
+	local playerPed    = PlayerPedId()
+	local playerCoords = GetEntityCoords(playerPed)
+	local inDirection  = GetOffsetFromEntityInWorldCoords(playerPed, 0.0, 5.0, 0.0)
+	local rayHandle    = StartShapeTestRay(playerCoords, inDirection, 10, playerPed, 0)
+	local numRayHandle, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
+	
+	if hit == 1 then
+		local entityType = GetEntityType(entityHit)
+		entityType = entityType == type or entityType > 0
+		if entityHit > 0 then return entityHit end
+	end
+
+	return nil
 end
 
 module.game.getVehicleProperties = function(vehicle)
@@ -678,41 +647,6 @@ module.game.ensureForcedComponents = function(ped, componentId, drawableId, text
 
   return forcedComponents
 
-end
-
-module.game.getClosestEntity = function(entities, isPlayerEntities, coords, modelFilter)
-  local closestEntity, closestEntityDistance, filteredEntities = -1, -1, nil
-
-  if coords then
-    coords = vector3(coords.x, coords.y, coords.z)
-  else
-    local playerPed = PlayerPedId()
-    coords = GetEntityCoords(playerPed)
-  end
-
-  if modelFilter then
-    filteredEntities = {}
-
-    for k,entity in pairs(entities) do
-      if modelFilter[GetEntityModel(entity)] then
-        table.insert(filteredEntities, entity)
-      end
-    end
-  end
-
-  for k,entity in pairs(filteredEntities or entities) do
-    local distance = #(coords - GetEntityCoords(entity))
-
-    if closestEntityDistance == -1 or distance < closestEntityDistance then
-      closestEntity, closestEntityDistance = isPlayerEntities and k or entity, distance
-    end
-  end
-
-  return closestEntity, closestEntityDistance
-end
-
-module.game.getClosestPed = function(coords, modelFilter) 
-  return module.game.getClosestEntity(module.game.getPeds(true), false, coords, modelFilter) 
 end
 
 module.game.setEnforcedPedComponentVariation = function(ped, componentId, drawableId, textureId, paletteId)
