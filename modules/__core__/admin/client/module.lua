@@ -289,7 +289,7 @@ module.FreezeUnfreeze = function(sourceId, action)
   end, sourceId)
 end
 
-module.RevivePlayer = function(playerId, sourceId)
+module.RevivePlayer = function(sourceId)
   request("esx:admin:isAuthorized", function(a)
     if not a then return end
 
