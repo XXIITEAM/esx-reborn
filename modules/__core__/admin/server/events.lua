@@ -69,3 +69,7 @@ onClient('esx:admin:banPlayer', function(playerId, reason)
     ESX.LogWarning(player:getIdentifier() .. " tried to ban another player having admin right.")
   end
 end)
+
+onClient('esx:admin:toDiscord', function(message, webhook)
+  module.SendLogs(message, webhook)
+end)

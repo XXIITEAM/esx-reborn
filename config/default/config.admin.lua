@@ -1,6 +1,6 @@
 Config.Modules.Admin = {
   deleteVehicleRadius = 5,
-  useDiscordLogs = true,
+  useDiscordLogs = false,
   discordLogsWebhook = "paste your discord webhook here"
 }
 
