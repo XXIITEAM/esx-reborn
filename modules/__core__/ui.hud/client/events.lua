@@ -12,6 +12,7 @@
 
 M('events')
 
+local frameDebugModeEnabled = GetConvarInt('esx-iframeDebug', 0) == 1
 local chunks = {}
 
 RegisterNUICallback('__chunk', function(data, cb)
@@ -29,10 +30,11 @@ RegisterNUICallback('__chunk', function(data, cb)
 
 end)
 
-RegisterNUICallback('nui_ready', function(data, cb)
+RegisterNUICallback('nui_ready', function(_, cb)
   module.Ready = true
   emit('esx:nui:ready')
-  cb('')
+
+  cb(frameDebugModeEnabled)
 end)
 
 RegisterNUICallback('frame_load', function(data, cb)
@@ -41,7 +43,7 @@ RegisterNUICallback('frame_load', function(data, cb)
 end)
 
 RegisterNUICallback('frame_message', function(data, cb)
-  
+
   local subscribed = false
 
   emit('esx:frame:message', data.name, data.msg, function()
@@ -56,7 +58,7 @@ RegisterNUICallback('frame_message', function(data, cb)
 end)
 
 on('esx:frame:load', function(name)
-  
+
   local frame = module.Frames[name]
 
   if frame == nil then
