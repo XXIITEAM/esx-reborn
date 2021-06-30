@@ -57,3 +57,104 @@ module.server.systemMessage = function(message)
     args = {"System", message}
   })
 end
+
+-- Enumerate entities
+module.game.getNearbyEntities = function(entities, coords, modelFilter, maxDistance, isPed)
+	local nearbyEntities = {}
+	coords = type(coords) == 'number' and GetEntityCoords(GetPlayerPed(coords)) or vector3(coords.x, coords.y, coords.z)
+	for k, entity in pairs(entities) do
+		if not isPed or (isPed and not IsPedAPlayer(entity)) then
+			if not modelFilter or modelFilter[GetEntityModel(entity)] then
+				local entityCoords = GetEntityCoords(entity)
+				if not maxDistance or #(coords - entityCoords) <= maxDistance then
+					table.insert(nearbyEntities, {entity=entity, coords=entityCoords})
+				end
+			end
+		end
+	end
+	
+	return nearbyEntities
+end
+
+module.game.getClosestEntity = function(entities, coords, modelFilter, maxDistance, isPed)
+	local distance, closestEntity, closestCoords = maxDistance or 100
+	coords = type(coords) == 'number' and GetEntityCoords(GetPlayerPed(coords)) or vector3(coords.x, coords.y, coords.z)
+
+	for k, entity in pairs(entities) do
+		if not isPed or (isPed and not IsPedAPlayer(entity)) then
+			if not modelFilter or modelFilter[GetEntityModel(entity)] then
+				local entityCoords = GetEntityCoords(entity)
+				local dist = #(coords - entityCoords)
+				if dist < distance then
+					closestEntity, distance, closestCoords = entity, dist, entityCoords
+				end
+			end
+		end
+	end
+	return closestEntity, distance, closestCoords
+end
+
+module.game.getPlayers = function(playerId, closest, coords, maxDistance)
+	local players = {}
+	local maxDistance = maxDistance or 100
+	local playerPed = playerId and GetPlayerPed(playerId)
+	if type then coords = type(coords) == 'number' and GetEntityCoords(GetPlayerPed(coords)) or vector3(coords.x, coords.y, coords.z) end
+	
+	for k, player in pairs(GetPlayers()) do
+		if player ~= playerId then
+			if type == nil then
+				table.insert(players, {id = player, ped = GetPlayerPed(player)})
+			else
+				local entity = GetPlayerPed(player)
+				local entityCoords = GetEntityCoords(entity)
+				if not closest then
+					if #(coords - entityCoords) <= maxDistance then
+						table.insert(players, {id = player, ped = entity, coords = entityCoords})
+					end
+				else
+					local dist = #(coords - entityCoords)
+					if dist <= players.dist or maxDistance then
+						players = {id = player, ped = entity, coords = entityCoords, distance = dist}
+					end
+				end
+			end
+		end
+	end
+	
+	return players
+end
+
+
+-- Get entities in area
+module.game.getPlayersInArea = function(playerId, coords, maxDistance)
+	return module.game.getPlayers(playerId, false, coords, maxDistance) 
+end
+
+module.game.getPedsInArea = function(coords, maxDistance, modelFilter)
+	return module.game.getNearbyEntities(GetAllPeds(), coords, modelFilter, true) 
+end
+
+module.game.getObjectsInArea = function(coords, maxDistance, modelFilter)
+	return module.game.getNearbyEntities(GetAllObjects(), coords, modelFilter, maxDistance) 
+end
+
+module.game.getVehiclesInArea = function(coords, maxDistance, modelFilter)
+	return module.game.getNearbyEntities(GetAllVehicles(), coords, modelFilter, maxDistance) 
+end
+
+-- Get closest entity of type
+module.game.getClosestPlayer = function(playerId, coords, maxDistance)
+	return module.game.getPlayers(playerId, true, coords)
+end
+
+module.game.getClosestPed = function(coords, maxDistance, modelFilter)
+	return module.game.getClosestEntity(GetAllPeds(), coords, modelFilter, maxDistance, true)
+end
+
+module.game.getClosestObject = function(coords, maxDistance, modelFilter)
+	return module.game.getClosestEntity(GetAllObjects(), coords, modelFilter, maxDistance)
+end
+
+module.game.getClosestVehicle = function(coords, maxDistance, modelFilter)
+	return module.game.getClosestEntity(GetAllVehicles(), coords, modelFilter, maxDistance)
+end
