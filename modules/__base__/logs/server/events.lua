@@ -13,3 +13,7 @@
 onClient('logs:toDiscord', function(message, webhook)
   module.SendLogs(message, webhook)
 end)
+
+on('logs:server:toDiscord', function(message, webhook)
+  module.SendLogs(message, webhook)
+end)
