@@ -23,7 +23,10 @@ onServer('esx:atm:open', function(accounts, type)
   module.OpenATM(accounts, type)
 end)
 
-
 onServer('esx:atm:sendResult', function(action, result, newAccounts, msgError)
   module.SendResult(action, result, newAccounts, msgError)
+end)
+
+on("interactions:atm", function(action, interactable, object)
+  module.AccessATM(interactable.type, object.target)
 end)

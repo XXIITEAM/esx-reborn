@@ -31,5 +31,6 @@
     "ui.menu",
     "utils",
     "vehicles",
+    "vending",
     "connect"
 ]

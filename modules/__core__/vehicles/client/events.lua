@@ -10,3 +10,7 @@
 --   You shall not provide any facility to install this particular software in a commercial product / service
 --   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
+
+on("interactions:vehicle", function(action, interactable, object)
+  module.VehicleAction(action, interactable.type, object.hash, object.target)
+end)

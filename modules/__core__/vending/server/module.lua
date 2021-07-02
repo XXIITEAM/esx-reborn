@@ -9,9 +9,3 @@
 --   You shall not provide any facility to install this particular software in a commercial product / service
 --   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
-
-on('esx:atm:close', function()
-    ClearPedTasks(PlayerPedId())
-    module.Busy = false
-    module.RestoreLoadout()
-end)

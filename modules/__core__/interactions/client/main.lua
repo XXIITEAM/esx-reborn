@@ -1,14 +1,22 @@
+-- Copyright (c) Jérémie N'gadi
+--
+-- All rights reserved.
+--
+-- Even if 'All rights reserved' is very clear :
+--
+--   You shall not use any piece of this software in a commercial product / service
+--   You shall not resell this software
+--   You shall not provide any facility to install this particular software in a commercial product / service
+--   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
+--   This copyright should appear in every part of the project code
+
 module.Init()
 
 ESX.SetInterval(1, function()
   if IsDisabledControlJustReleased(0, 37) then
     if not module.FocusActive then
       module.FocusActive = true
-      module.Frame:postMessage({ type = "active" })
-    else
-      module.FocusActive = false
-      module.Frame:postMessage({ type = "inactive" })
-      module.RestoreLoadout()
+      module.StartInteraction()
     end
   end
 
@@ -29,8 +37,18 @@ ESX.SetInterval(1, function()
   end
 end)
 
+ESX.SetInterval(250, function()
+  if module.FocusActive then
+    if GetSelectedPedWeapon(PlayerPedId()) ~= GetHashKey("WEAPON_UNARMED") then
+      module.SavedWeapon = GetSelectedPedWeapon(PlayerPedId())
+      SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
+    end
+  end
+end)
+
 ESX.SetInterval(1, function()
   if module.FocusActive then
+
     SetPlayerLockonRangeOverride(PlayerId(), 0.0)
     DisablePlayerFiring(PlayerPedId(), true)
     DisableControlAction(0,21,true)
@@ -63,46 +81,12 @@ ESX.SetInterval(1, function()
   end
 end)
 
-ESX.SetInterval(250, function()
-  if module.FocusActive then
-    if GetSelectedPedWeapon(PlayerPedId()) ~= GetHashKey("WEAPON_UNARMED") then
-      module.SavedWeapon = GetSelectedPedWeapon(PlayerPedId())
-      SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
-    end
-  end
-
-  if not module.Busy then
-    if IsControlPressed(0, 25) and module.FocusActive then
-      local aiming, target = GetEntityPlayerIsFreeAimingAt(PlayerId())
-      print(aiming)
-
-      if aiming then
-        local model = GetEntityModel(target)
-        print("model = " .. tostring(model))
-        local modelName
-        local pCoords = GetEntityCoords(PlayerPedId(), true)
-        local tCoords = GetEntityCoords(target, true)
-        local distance = #(pCoords - tCoords)
-
-        print(tostring(distance) .. " m")
-        if module.ModelNames[tostring(model)] then
-          modelName = module.ModelNames[tostring(model)]
-        end
-
-        if distance < 15 and DoesEntityExist(target)then
-          if modelName then
-            module.Update(tostring(modelName))
-          end
-        else
-          module.Clear()
-        end
-      else
-        module.Clear()
+if Config.Modules.Interactions.EnableDebugging then
+  ESX.SetInterval(1, function()
+    if module.ShouldHighlightObject then
+      if module.Object.coords then
+        module.HighlightObject(module.Object.coords)
       end
-    else
-      module.Clear()
     end
-  else
-    module.Clear()
-  end
-end)
+  end)
+end

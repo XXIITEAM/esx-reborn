@@ -32,3 +32,26 @@ onRequest("utils:spawnVehicle", function(source, cb, model, location, heading)
     cb(false)
   end
 end)
+
+onRequest("utils:spawnPed", function(source, cb, model, location, heading)
+  if model and type(model) == 'string' then
+    module.game.createPed(model, location, heading, function(ped)
+      local count = 0
+
+      while not DoesEntityExist(ped) and count < 1000 do
+        count = count + 1
+        Wait(10)
+      end
+      
+      if DoesEntityExist(ped) then
+        local pedID = NetworkGetNetworkIdFromEntity(ped)
+
+        cb(ped)
+      else
+        cb(false)
+      end
+    end)
+  else
+    cb(false)
+  end
+end)

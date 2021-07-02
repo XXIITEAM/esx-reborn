@@ -3,56 +3,231 @@
     src: url('../fonts/coolvetica.ttf');
 }
 
-html {
-    margin: 0;
+body {
+    margin: 0px;
+    font-family: ChaletLondon;
     width: 100vw;
     height: 100vh;
-    position: fixed;
+}
+
+.context_menu {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+}
+
+
+/* DOORS */
+
+#atm_context,
+#vehicle_context,
+#door_context,
+#vending_context,
+#npcvending_context {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    text-align: center;
+    z-index: 10000;
+    width: 150px;
+    display: none;
+    list-style-type: none;
     user-select: none;
 }
 
-body {
+#atm_context.active,
+#vehicle_context.active,
+#door_context.active,
+#vending_context.active,
+#npcvending_context.active {
+    display: block;
+}
+
+#atm_context .menu-item,
+#vehicle_context .menu-item,
+#door_context .menu-item,
+#vending_context .menu-item,
+#npcvending_context .menu-item {
+    padding: 8px 10px;
+    font-size: 15px;
+    color: rgba(180, 180, 180, 0.7);
+    background-color: rgba(0, 0, 0, 0.7);
+    margin-bottom: 2px;
+    border-radius: 10px;
+    user-select: none;
+}
+
+#atm_context .menu-item:hover,
+#vehicle_context .menu-item:hover,
+#door_context .menu-item:hover,
+#vending_context .menu-item:hover,
+#npcvending_context .menu-item:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#atm_context .menu-item i,
+#vehicle_context .menu-item i,
+#door_context .menu-item i,
+#vending_context .menu-item i,
+#npcvending_context .menu-item i {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+#atm_context hr,
+#vehicle_context hr,
+#door_context hr,
+#vending_context hr,
+#npcvending_context hr {
+    margin: 2px 0px;
+    border-color: #555;
+}
+
+#vehicle-door-menu::after {
+    content: "";
     position: absolute;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    display: none;
+    margin-top: 5px;
+    right: 5px;
+    border: 5px solid transparent;
+    border-left-color: rgba(150, 150, 150, 0.7);
 }
 
-.crosshair {
-    position: fixed;
-    /* or absolute */
-    top: 50%;
-    left: 50%;
-    margin-left: auto;
-    margin-right: auto;
-    width: 2vw;
-    height: 1.5vh;
+#vehicle_context #vehicle-door-menu:hover::after {
+    border-left-color: rgba(180, 180, 180, 0.7);
 }
 
-#info img {
-    position: fixed;
-    top: 53.2%;
-    left: 50%;
-    width: 0.7vw;
-    height: 1.6vh;
+#vehicle-door-sub-menu {
+    position: absolute;
+    z-index: 10000;
+    width: 150px;
+    left: 100%;
+    transform: scale(0);
+    list-style-type: none;
+    user-select: none;
 }
 
-#span1 {
-    position: fixed;
-    top: 53%;
-    left: 51%;
-    color: lightgreen;
-    font-size: 1.6vh;
-    font-weight: bold;
-    font-family: ChaletLondon;
+#vehicle-door-sub-menu .menu-item {
+    font-size: 15px;
+    color: rgba(180, 180, 180, 0.7);
+    user-select: none;
 }
 
-#span2 {
-    position: fixed;
-    top: 55%;
-    left: 51%;
-    font-size: 1.6vh;
-    color: white;
-    font-weight: bold;
+#door-sub-menu .menu-item:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#vehicle-door-sub-menu .menu-item i {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.menu-item:hover>#vehicle-door-sub-menu {
+    opacity: 1;
+    -webkit-transform: translate(0, 0) scale(1);
+    transform: translate(0px, -27px) scale(1);
+    pointer-events: auto;
+}
+
+#tow-menu::after {
+    content: "";
+    position: absolute;
+    right: 5px;
+    border: 5px solid transparent;
+    border-left-color: rgba(150, 150, 150, 0.7);
+}
+
+#context #tow-menu:hover::after {
+    border-left-color: rgba(180, 180, 180, 0.7);
+}
+
+#tow-sub-menu {
+    position: absolute;
+    z-index: 10000;
+    width: 150px;
+    left: 100%;
+    background: #1b1a1a;
+    transform: scale(0);
+    list-style-type: none;
+    user-select: none;
+}
+
+#tow-sub-menu .menu-item {
+    padding: 8px 10px;
+    font-size: 15px;
+    color: rgba(180, 180, 180, 0.7);
+    user-select: none;
+}
+
+#tow-sub-menu .menu-item:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#tow-sub-menu .menu-item i {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.menu-item:hover>#tow-sub-menu {
+    opacity: 1;
+    -webkit-transform: translate(0, 0) scale(1);
+    transform: translate(0, -23px) scale(1);
+    pointer-events: auto;
+}
+
+#police-menu::after {
+    content: "";
+    position: absolute;
+    right: 5px;
+    border: 5px solid transparent;
+    border-left-color: rgba(150, 150, 150, 0.7);
+}
+
+#context #police-menu:hover::after {
+    border-left-color: rgba(180, 180, 180, 0.7);
+}
+
+#police-sub-menu {
+    position: absolute;
+    z-index: 10000;
+    width: 150px;
+    left: 100%;
+    transform: scale(0);
+    list-style-type: none;
+    user-select: none;
+}
+
+#police-sub-menu .menu-item {
+    padding: 8px 10px;
+    font-size: 15px;
+    color: rgba(180, 180, 180, 0.7);
+    user-select: none;
+}
+
+#police-sub-menu .menu-item:hover {
+    color: rgba(0, 255, 255, 0.7);
+}
+
+#police-sub-menu .menu-item i {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.menu-item:hover>#police-sub-menu {
+    opacity: 1;
+    -webkit-transform: translate(0, 0) scale(1);
+    transform: translate(0, -23px) scale(1);
+    pointer-events: auto;
+}
+
+#context #steal:hover {
+    color: rgba(255, 0, 0, 0.7);
+}
+
+#context #lockpick:hover {
+    color: rgba(255, 0, 0, 0.7);
+}
+
+#context #context-menu {
+    top: 4px;
+    left: 99%;
 }

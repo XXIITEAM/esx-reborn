@@ -38,6 +38,31 @@ module.game.createVehicle = function (model, coords, heading, cb)
   end
 end
 
+module.game.createPed = function (model, coords, heading, cb)
+  if type(model) == 'string' then
+    modelHash = GetHashKey(model)
+
+    -- print("CreatePed: model = " .. model .. " | coords = " .. json.encode(coords) .. " | heading = " .. tostring(heading))
+    local ped = CreatePed(4, modelHash, coords, heading, true, false)
+
+    local interval
+
+    interval = ESX.SetInterval(0, function()
+      if DoesEntityExist(ped) then
+        ESX.ClearInterval(interval)
+      end
+    end)
+    
+    if ped and cb then
+      cb(ped)
+    else
+      cb(nil)
+    end
+  else
+    cb(nil)
+  end
+end
+
 module.game.createLocalVehicle = function(model, coords, heading, cb)
   if type(model) == 'string' then
     model = GetHashKey(model)

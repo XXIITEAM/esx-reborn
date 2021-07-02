@@ -3,13 +3,44 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="./css/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="./js/jquery-1.7.1.min.js"></script>
 </head>
 
 <body>
-    <div class="handler" id="handler">
-        <img class="crosshair" src="img/icon.png">
-        <div id="info"></div>
+    <div id="atm_context">
+        <div id="atm_use" class="menu-item">Use</div>
+        <div id="atm_cancel" class="menu-item">Cancel</div>
+    </div>
+    <div id="vehicle_context">
+        <div id="vehicle_in" class="menu-item">Get In</div>
+        <div id="vehicle-door-menu" class="menu-item">Doors
+            <div id="vehicle-door-sub-menu">
+                <div id="vehicle_frontleft" class="menu-item">Front Left</div>
+                <div id="vehicle_frontright" class="menu-item">Front Right</div>
+                <div id="vehicle_backleft" class="menu-item">Back Left</div>
+                <div id="vehicle_backright" class="menu-item">Back Right</div>
+                <div id="vehicle_hood" class="menu-item">Hood</div>
+                <div id="vehicle_trunk" class="menu-item">Trunk</div>
+            </div>
+        </div>
+        <div id="vehicle_lockpick" class="menu-item">Lockpick</div>
+        <div id="vehicle_cancel" class="menu-item">Cancel</div>
+    </div>
+    <div id="door_context">
+        <div id="door_open" class="menu-item">Open Door</div>
+        <div id="door_close" class="menu-item">Close Door</div>
+        <div id="door_lock" class="menu-item">Lock Door</div>
+        <div id="door_unlock" class="menu-item">Unlock Door</div>
+        <div id="door_lockpick" class="menu-item">Lockpick</div>
+        <div id="door_cancel" class="menu-item">Cancel</div>
+    </div>
+    <div id="vending_context">
+        <div id="vending_buy" class="menu-item">Buy</div>
+        <div id="vending_cancel" class="menu-item">Cancel</div>
+    </div>
+    <div id="npcvending_context">
+        <div id="npcvending_buy" class="menu-item">Buy Food</div>
+        <div id="npcvending_cancel" class="menu-item">Cancel</div>
     </div>
     <script src="js/handler.js"></script>
 </body>

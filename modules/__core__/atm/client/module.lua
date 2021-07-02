@@ -33,16 +33,42 @@ module.Frame:on('transfer', function(data)
 end)
 
 module.Frame:on('close', function(data)
+  module.Busy = false
   module.Frame:unfocus()
   emit('esx:atm:close')
 end)
 
+module.AccessATM = function(intType, object)
+  if not module.Busy then
+    module.Busy = true
+    if DoesEntityExist(object) then
+      print(true)
+      local playerPed = PlayerPedId()
+      local pCoords = GetEntityCoords(playerPed, 0)
+      local oCoords = GetEntityCoords(object, 0)
+      local position = GetOffsetFromEntityInWorldCoords(object, 0.0, -0.55, 0.05)
+      local heading =  GetEntityHeading(object)
+      TaskTurnPedToFaceEntity(playerPed, object, -1)
 
+      local count = 0
 
+      if not IsEntityAtCoord(playerPed, position, 0.05, 0.05, 0.05, false, true, 0) then
+        TaskGoStraightToCoord(playerPed, position, 0.05, 20000, heading, 0.05)
+        while not IsEntityAtCoord(playerPed, position, 0.05, 0.05, 0.05, false, true, 0) and count < 4 do
+          count = count + 1
+          Citizen.Wait(500)
+        end
+      end
 
+      TaskTurnPedToFaceEntity(playerPed, atm, -1)
+      TaskStartScenarioAtPosition(playerPed, "PROP_HUMAN_ATM", position.x, position.y, pCoords.z, heading, 0, true, true)
+      Wait(2500)
+      emitServer('esx:atm:open', intType)
+    end
+  end
+end
 
 module.OpenATM = function(accounts, type)
-
   module.Frame:postMessage({
       method = 'setData',
       data = {
@@ -56,13 +82,9 @@ module.OpenATM = function(accounts, type)
   })
 
   module.Frame:focus(true,true)
-
 end
 
-
-
 module.SendResult = function (action, result, newAccounts, msgError)
-
   module.Frame:postMessage({
     method = 'sendResult',
     data = {
@@ -72,5 +94,4 @@ module.SendResult = function (action, result, newAccounts, msgError)
       msgError = msgError or ''
     }
   })
-
 end

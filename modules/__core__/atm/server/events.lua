@@ -11,7 +11,6 @@
 --   This copyright should appear in every part of the project code
 
 onClient('esx:atm:open', function(type)
-
   local player = Player.fromId(source)
   local identity = player:getIdentity()
   local accounts = identity:getAccounts()
