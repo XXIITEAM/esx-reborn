@@ -18,6 +18,7 @@
 
 - An installed MariaDB server (we will not support MySQL).
 - [ghmattimysql by GHMatti](https://github.com/GHMatti/ghmattimysql/releases/tag/1.3.2)
+- [external_handler by ESXCrackhead](https://github.com/ESXCrackhead/external_handler)
 - [Node.Js 10+](https://nodejs.org/en/)
 
 ### How to Install:
@@ -48,6 +49,7 @@ ensure yarn
 
 ensure ghmattimysql
 ensure cron
+ensure external_handler
 
 ensure esx-reborn # Will now auto-generate fxmanifest.lua to prevent platform-dependant behavior, will prompt you to type ensure esx-reborn in console when fxmanifest has changed. To save some typing, uncomment below lines
 

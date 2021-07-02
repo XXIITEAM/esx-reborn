@@ -51,8 +51,8 @@ module.AccessVending = function(interactable, object)
       SetEntityProofs(model, false, true, false, false, false, false, 0, false)
       if Config.Modules.Vending.AttachCoords[interactable.name] then
         local aCoords = Config.Modules.Vending.AttachCoords[interactable.name]
-        print("X: " .. aCoords.x .. " Y: " .. aCoords.y .. " Z: " .. aCoords.z)
-        print("RotX: " .. aCoords.rotX .. " RotY: " .. aCoords.rotY .. " RotZ: " .. aCoords.rotZ)
+        -- print("X: " .. aCoords.x .. " Y: " .. aCoords.y .. " Z: " .. aCoords.z)
+        -- print("RotX: " .. aCoords.rotX .. " RotY: " .. aCoords.rotY .. " RotZ: " .. aCoords.rotZ)
         AttachEntityToEntity(model, ped, GetPedBoneIndex(ped, 60309), aCoords.x, aCoords.y, aCoords.z, aCoords.rotX, aCoords.rotY, aCoords.rotZ, 1, 1, 0, 0, 2, 1)
       end
 
