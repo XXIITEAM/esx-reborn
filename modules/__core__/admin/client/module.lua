@@ -292,7 +292,6 @@ end
 module.RevivePlayer = function(sourceId)
   request("esx:admin:isAuthorized", function(a)
     if not a then return end
-
     local playerPed  = PlayerPedId()
     local playerId   = PlayerId()
     local playerName = GetPlayerName(playerId)  
