@@ -18,7 +18,6 @@ const hairC = document.getElementById("hairColor");
 const hairHighlightC = document.getElementById("hairHighlightColor");
 const beardC = document.getElementById("beardColor");
 const lipstickC = document.getElementById("lipstickColor");
-const makeupC = document.getElementById("makeupColor");
 const chesthairC = document.getElementById("chesthairColor");
 
 let eyebrowColors = [];
@@ -26,7 +25,6 @@ let blushColors = [];
 let hairColors = [];
 let hairHighlightColors = [];
 let lipstickColors = [];
-let makeupColors = [];
 let mouseDown = false;
 let offsetX = null;
 let offsetY = null;
@@ -89,7 +87,6 @@ let charData = {
     makeup: 0,
     lipstick: 0,
     lipstickColor: 0,
-    makeupColor: 0,
     makeupOpacity: 0,
     lipstickOpacity: 0,
     aging: 0,
@@ -157,7 +154,6 @@ window.addEventListener('message', function(event) {
     } else if (event.data.type === "initData") {
         hairColors = event.data.hairColors;
         lipstickColors = event.data.lipstickColors;
-        makeupColors = event.data.makeupColors;
         blushColors = event.data.blushColors;
         $("#changeHumanPed").attr("max", event.data.humanPeds).val(0);
         $("#changeAnimalPed").attr("max", event.data.animalPeds).val(0);
@@ -168,7 +164,6 @@ window.addEventListener('message', function(event) {
         let hairHighlightData = hairColors;
         let beardData = hairColors;
         let lipstickData = lipstickColors;
-        let makeupData = makeupColors;
         let chesthairData = hairColors;
 
         $(eyeC).empty();
@@ -177,7 +172,6 @@ window.addEventListener('message', function(event) {
         $(hairHighlightC).empty();
         $(beardC).empty();
         $(lipstickC).empty();
-        $(makeupC).empty();
         $(chesthairC).empty();
 
         let eyeID = $(eyeC).attr('id')
@@ -235,14 +229,6 @@ window.addEventListener('message', function(event) {
             let newElement = $('<div class="radiocolor" data-type="lipstickColor">' + inputTag + '<label + for="' + color.index + 'color' + '"></label></div>').data("colorIndex", color.index);
             newElement.find('input[type="radio"] + label').css('background-color', color.hex);
             $(lipstickC).append(newElement);
-        }
-
-        let makeupID = $(makeupC).attr('id')
-        for (const color of makeupData) {
-            let inputTag = '<input type="radio" id="' + color.index + 'color' + '" name="' + makeupID + '"value="' + color.index + '" />';
-            let newElement = $('<div class="radiocolor" data-type="makeupColor">' + inputTag + '<label + for="' + color.index + 'color' + '"></label></div>').data("colorIndex", color.index);
-            newElement.find('input[type="radio"] + label').css('background-color', color.hex);
-            $(makeupC).append(newElement);
         }
 
         let chesthairID = $(chesthairC).attr('id')

@@ -7,7 +7,7 @@
 --   You shall not use any piece of this software in a commercial product / service
 --   You shall not resell this software
 --   You shall not provide any facility to install this particular software in a commercial product / service
---   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
+--   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
 --   This copyright should appear in every part of the project code
 
 M('command')
@@ -241,7 +241,6 @@ KickAll:setHandler(function(player, args)
   end
 end)
 
-
 SpawnProp:register()
 TeleportToMarker:register()
 TeleportToPlayer:register()
@@ -260,15 +259,3 @@ KillPlayer:register()
 SetPlayerArmor:register()
 KickPlayer:register()
 KickAll:register()
-
-
-
-function sendLogs (message,webhook)
-  if message == nil or message == '' then return FALSE end
-  PerformHttpRequest(webhook, function(err, text, headers) end, 'POST', json.encode({ content = message }), { ['Content-Type'] = 'application/json' })
-end
-
-onServer("toDiscord", function(message, webhook)
-  sendLogs(message , webhook)
-end)
-

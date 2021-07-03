@@ -7,7 +7,7 @@
 //   You shall not use any piece of this software in a commercial product / service
 //   You shall not resell this software
 //   You shall not provide any facility to install this particular software in a commercial product / service
-//   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
+//   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
 //   This copyright should appear in every part of the project code
 
 (() => {
@@ -26,11 +26,12 @@
       window.addEventListener('mousewheel',  e => this.onMouseWheel(e));
       window.addEventListener('contextmenu', e => this.onContextMenu(e));
 
-      window.NUICallback = this.NUICallback;
+      window.NUICallback = (name, data = {}, asJSON = false) => this.NUICallback(name, data, asJSON);
+      
     }
 
     postFrameMessage(msg) {
-
+      
       if(window.__ESXROOT__)
         window.__ESXROOT__.postFrameMessage('__root__', msg);
       else
@@ -39,7 +40,7 @@
 
     async NUICallback(name, data = {}, asJSON = false) {
 
-      const res = await fetch(`https://${this.resName}/${name}`, {
+      const res = await fetch('http://' + this.resName + '/' + name, {
         method: 'POST',
         headers: {
           'Accept'      : 'application/json',

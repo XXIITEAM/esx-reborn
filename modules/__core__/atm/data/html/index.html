@@ -1,139 +1,49 @@
-<!-- Copyright (c) Jérémie N'gadi
-
-All rights reserved.
-
-Even if 'All rights reserved' is very clear :
-
- You shall not use any piece of this software in a commercial product / service
- You shall not resell this software
- You shall not provide any facility to install this particular software in a commercial product / service
- If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
- This copyright should appear in every part of the project code -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="css/all.min.css" />
-  <link rel="stylesheet" href="css/main.css" />
-  <title>ESX ATM</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./index.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <title>Document</title>
 </head>
-
 <body>
-  <div class="container">
-
-    <div class="choose-page">
-
-      <div class="close"><div class="close-button"><i class="fas fa-times-circle" id="closeUI"></i></div></div>
-
-      <div class="logo"><img class="logo-img" src="assets/atm-light.png" alt="ATM Logo" /></div>
-
-      <div class="main-wrapper">
-
-        <div class="title">choose the account you want to access</div>
-
-        <div class="button"><button class="buttonAccount" id="maze" data-account="maze">Maze</button></div>
-        <div class="separator">
-          <span class="line"></span>
-          or
-          <span class="line"></span>
-        </div>
-        <div class="button"><button class="buttonAccount fleeca" id="fleeca" data-account="fleeca">Fleeca</button></div>
-
+  <div>
+    <div class="container">
+      <div class="header">
+        <h1 class="header-item">Maze Bank</h1>
+        <h1 class="header-item" id="player-name"></h1>
+        <h2 class="header-item" id="player-balance"></h2>
       </div>
-
-    </div>
-
-    <div class="account-page">
-
-      <div class="cancel">
-        <div class="circle">
-          <i class="fas fa-chevron-left"></i>
-        </div>
-        <div class="cancel-text">Go back</div>
-      </div>
-
-      <div class="main-wrapper">
-
-        <div class="info">
-
-          <div class="balance-info">
-            <div class="balance-title title">Balance</div>
-            <div class="balance desc"></div>
+      <div class="wrapper">
+        <p class="fucking-quote">“Cocaine is God’s way of saying you’re making too much money.” – Robin Williams</p>
+        <p id="action-feedback"></p>
+        <div class="input-section">
+          <div class="input-container">
+            <input id="input-amount" type="number" placeholder="Amount" />
           </div>
-
-          <div class="account-info">
-            <div class="account-title title">Account</div>
-            <div class="account desc"></div>
+        </div>
+        <div class="action-section">
+          <button class="action-button" id="action-deposit" onclick="depositMoney()">Deposit</button>
+          <div class="action-grid">
+            <button class="action-button" id="action-withdraw" onclick="withdrawMoney()">Withdraw</button>
+            <button class="action-button" id="action-transfer" onclick="transferMoney()">Transfer</button>
           </div>
-
         </div>
-
-        <div class="buttons">
-          <button class="buttonAction" id="withdraw" data-action="withdraw">Withdraw</button>
-          <button class="buttonAction" id="deposit" data-action="deposit">Deposit</button>
-          <button class="buttonAction" id="transfer" data-action="transfer">Transfer</button>
-        </div>
-
-
-      </div>
-
-      <div class="logo"><img class="logo-img" src="assets/atm-light.png" alt="ATM Logo" /></div>
-
-    </div>
-
-
-    <div id="modal" class="modal">
-
-      <div class="modal-container">
-
-        <div class="modal-header">
-          <div class="modal-title"></div>
-          <i class="fas fa-times-circle" id="closeModal"></i>
-        </div>
-
-        <!-- Modal content -->
-        <div class="modal-content">
-          <div class="quantity">
-            <div class="title">Quantity</div>
-            <input type="number" name="quantity" id="quantityInput" autocomplete="off">
-            <p class="error" id="quantityError"></p>
+        <div class="transfer-modal">
+          <div class="modal-con">
+            <p id="modal-amount"></p>
+            <input id="playerid" type="number" placeholder="Player ID" />
+            <button class="action-button" id="confirm-transfer" onclick="confirmTransfer()">Transfer</button>
+            <button class="action-button" id="close-transfer" onclick="cancelTransfer()">Cancel</button>
           </div>
-
-          <div class="id">
-            <div class="title">ID</div>
-            <input type="number" name="id" id="idInput" autocomplete="off">
-            <p class="error" id="idError"></p>
-          </div>
-
-          <div class="account">
-            <div class="title">Account</div>
-            <select name="account" id="accounts">
-              <option id="selectMaze" value="maze">MAZE</option>
-              <option id="selectFleeca" value="fleeca">FLEECA</option>
-            </select>
-          </div>
-
         </div>
-
-        <div class="modal-actions">
-          <button class="modalAction" id="cancel">Cancel</button>
-          <button class="modalAction" id="confirm" onclick="confirmModal(this)">Confirm</button>
-        </div>
-
       </div>
     </div>
-
-    <div class="loading">
-      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-    </div>
-
-    <div id="snackbar"></div>
-
   </div>
-  <script src="js/main.js"></script>
-</body>
 
+  <script src="./index.js"></script>
+</body>
 </html>

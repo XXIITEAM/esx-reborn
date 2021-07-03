@@ -7,7 +7,7 @@
 --   You shall not use any piece of this software in a commercial product / service
 --   You shall not resell this software
 --   You shall not provide any facility to install this particular software in a commercial product / service
---   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
+--   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
 --   This copyright should appear in every part of the project code
 
 local utils = M('utils')
@@ -30,8 +30,6 @@ module.Init = function()
   end)
 
   module.Frame = Frame('admin', 'https://cfx-nui-' .. __RESOURCE__ .. '/modules/__core__/admin/data/build/index.html', false)
-
-
 
   module.Frame:on('close', function()
     module.closeAdminMenu()
@@ -91,18 +89,10 @@ end
 
 module.KickPlayer = function(playerId, reason)
   emitServer("esx:admin:kickPlayer", playerId, reason)
-  local playerName = GetPlayerName(playerId)
-  if Config.Modules.Admin.useDiscordLogs then
-    emitServer('logs:toDiscord', '**Player kicked.** Player: '..playerName.. ' Reason: '..reason.. '')
-  end
 end
 
 module.BanPlayer = function(playerId, reason)
   emitServer("esx:admin:banPlayer", playerId, reason)
-  local playerName = GetPlayerName(playerId)
-  if Config.Modules.Admin.useDiscordLogs then
-    emitServer('logs:toDiscord', '**Player banned.** Player: '..playerName.. ' Reason: '..reason.. '')
-  end
 end
 
 module.SpawnProp = function(sourceId, propname)
@@ -125,9 +115,6 @@ module.SpawnProp = function(sourceId, propname)
     local x, y, z = table.unpack(GetEntityCoords(PlayerPedId() , true))
     local prop = CreateObjectNoOffset(GetHashKey(propname), x, y, z, true, true, true)
     PlaceObjectOnGroundProperly(prop)
-    if Config.Module.Admin.useDiscordLogs then
-      emitServer('logs:toDiscord', '**Prop placed.** Prop: '..propname.. '')
-    end
   end, sourceId)
 end
 
@@ -149,9 +136,6 @@ module.TeleportToMarker = function(sourceId)
 
         if foundGround then
           SetPedCoordsKeepVehicle(playerPed, vector3(waypointCoords["x"], waypointCoords["y"], zPos))
-          if Config.Modules.Admin.useDiscordLogs then
-            emitServer('logs:toDiscord', '**Admin teleported to waypoint.** Waypoint: '..waypointCoords.. '')
-          end
           break
         end
 
@@ -159,7 +143,6 @@ module.TeleportToMarker = function(sourceId)
       end
 
       utils.ui.showNotification(_U('admin_result_tp'))
-
     else
       utils.ui.showNotification(_U('admin_result_teleport_to_marker'))
     end
@@ -212,9 +195,6 @@ module.SpawnVehicle = function(sourceId, vehicleName)
       utils.game.createVehicle(model, playerCoords, playerHeading, function(vehicle)
         TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
       end)
-      if Config.Modules.Admin.useDiscordLogs then
-         emitServer('logs:toDiscord', '**Vehicle spawned.** Vehicle: '..model.. '')
-      end
     else
       utils.ui.showNotification(_U('admin_invalid_vehicle_model'))
     end
@@ -228,7 +208,7 @@ module.DeleteVehicle = function(sourceId, radius)
     local playerPed = PlayerPedId()
 
     if IsPedInAnyVehicle(playerPed, true) then
-      module.delVehicle(GetVehiclePedIsIn(playerPed, false))  
+      module.delVehicle(GetVehiclePedIsIn(playerPed, false))
     else
       if radius and tonumber(radius) then
         local vehicles = utils.game.getVehiclesInArea(GetEntityCoords(playerPed), tonumber(radius) + 0.01)
@@ -267,24 +247,17 @@ module.FreezeUnfreeze = function(sourceId, action)
 
     local playerPed = PlayerPedId()
     local playerId = PlayerId()
-    local playerName = GetPlayerName(playerId)
 
     if action == 'freeze' then
       FreezeEntityPosition(playerPed, true)
       SetEntityCollision(playerPed, false)
       SetPlayerInvincible(playerId, true)
       utils.ui.showNotification(_U('admin_result_freeze'))
-      if Config.Module.Admin.useDiscordLogs then
-        emitServer('logs:toDiscord', '**Player frozen.** Player: '..playerName.. '')
-      end
     elseif action == 'unfreeze' then
       FreezeEntityPosition(playerPed, false)
       SetEntityCollision(playerPed, true)
       SetPlayerInvincible(playerId, false)
       utils.ui.showNotification(_U('admin_result_unfreeze'))
-      if Config.Module.Admin.useDiscordLogs then
-        emitServer('logs:toDiscord', '**Player unfrozen.** Player: '..playerName.. '')
-      end
     end
   end, sourceId)
 end
@@ -292,9 +265,8 @@ end
 module.RevivePlayer = function(sourceId)
   request("esx:admin:isAuthorized", function(a)
     if not a then return end
-    local playerPed  = PlayerPedId()
-    local playerId   = PlayerId()
-    local playerName = GetPlayerName(playerId)  
+
+    local playerPed = PlayerPedId()
 
     NetworkResurrectLocalPlayer(GetEntityCoords(playerPed), true, true, false)
 
@@ -304,9 +276,6 @@ module.RevivePlayer = function(sourceId)
     ClearPedLastWeaponDamage(playerPed)
     RemoveParticleFxFromEntity(playerPed)
     utils.ui.showNotification(_U('admin_result_revive'))
-    if Config.Modules.Admin.useDiscordLogs then
-      emitServer('logs:toDiscord', '**Player revived.** Player: '..playerName.. '')
-    end
   end, sourceId)
 end
 

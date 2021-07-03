@@ -7,7 +7,7 @@
 --   You shall not use any piece of this software in a commercial product / service
 --   You shall not resell this software
 --   You shall not provide any facility to install this particular software in a commercial product / service
---   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
+--   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
 --   This copyright should appear in every part of the project code
 
 Locales['en'] = {
@@ -153,13 +153,13 @@ Locales['en'] = {
   ['admin_result_tp'] = 'Teleported',
   ['admin_result_teleport_to_marker'] = 'You need to set a waypoint.',
   ['admin_invalid_vehicle_model'] = 'Invalid vehicle model.',
-	['admin_result_freeze'] = 'You have been frozen by an admin.',
-	['admin_result_unfreeze'] = 'You have been unfrozen by an admin.',
+	['admin_result_freeze'] = 'You have been freezed by admin.',
+	['admin_result_unfreeze'] = 'You have been unfreezed by admin.',
   ['admin_get_player_coords_result'] = 'The player %s (%s %s) is at (%.2f, %.2f, %.2f)',
   ['admin_get_player_coords_error'] = 'There was an error trying to get the player coords.',
   ['admin_get_players'] = '"Player [%s](%s): %s %s | Ping: %s',
-  ['admin_result_killed'] = 'You have been killed by an admin.',
-	['admin_result_revive'] = 'You have been ressurected by an admin.',
+  ['admin_result_killed'] = 'You have been killed by admin.',
+	['admin_result_revive'] = 'You have been ressurected by admin.',
 	['admin_result_health'] = 'Your health has been changed.',
 	['admin_result_armor'] = 'Your armor has been changed.',
   ['admin_result_current_active'] = 'You have an action active.',
@@ -174,10 +174,6 @@ Locales['en'] = {
   ['locale_digit_grouping_symbol'] = ',',
   ['locale_currency'] = '$%s',
 
-  -- Vehicles
-  ['vehicle_buy_success'] = '^7[^4%s^7 |^5 %s %s^7] ^3bought^7: ^5%s^7 with the plates ^3%s ^7for ^2$%s^7',
-  ['vehicles_all_stored'] = '^2returned all owned vehicles to their garages^7',
-  
   -- Weapons
   ['weapon_knife'] = 'knife',
   ['weapon_nightstick'] = 'nightstick',

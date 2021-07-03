@@ -7,7 +7,7 @@
 --   You shall not use any piece of this software in a commercial product / service
 --   You shall not resell this software
 --   You shall not provide any facility to install this particular software in a commercial product / service
---   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
+--   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
 --   This copyright should appear in every part of the project code
 
 local utils    = M('utils')
@@ -248,7 +248,6 @@ module.LoadPreviewSkin = function(skin)
       SetPedHairColor(PlayerPedId(), skin.hairColor, skin.hairHighlightColor)
       SetPedHeadOverlayColor(PlayerPedId(), 1, 1, skin.beardColor, 0)
       SetPedHeadOverlayColor(PlayerPedId(), 2, 1, skin.eyebrowColor, 0)
-      SetPedHeadOverlayColor(PlayerPedId(), 4, 2, skin.makeupColor, 0)
       SetPedHeadOverlayColor(PlayerPedId(), 5, 2, skin.blushColor, 0)
       SetPedHeadOverlayColor(PlayerPedId(), 8, 2, skin.lipstickColor, 0)
       SetPedHeadOverlayColor(PlayerPedId(), 10, 1, skin.chestHairColor, 0)

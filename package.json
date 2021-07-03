@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/esx-framework/esx-reborn.git"
+    "url": "git+https://github.com/ESX-Org/esx-reborn.git"
   },
   "keywords": [
     "esx"
@@ -19,9 +19,9 @@
   "author": "The ESX Team",
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/esx-framework/esx-reborn/issues"
+    "url": "https://github.com/ESX-Org/esx-reborn/issues"
   },
-  "homepage": "https://github.com/esx-framework/esx-reborn#readme",
+  "homepage": "https://github.com/ESX-Org/esx-reborn#readme",
   "devDependencies": {},
   "dependencies": {
     "fengari": "^0.1.4",

@@ -41,7 +41,7 @@ We have an official [discord server](https://discord.gg/ztzKWAF) with helpful ad
 
 ### ESX Reborn and Modules
 
-ESX Reborn is a replacment for the deprecated ESX v1 FiveM framework. Version 2 aims to create a framework that is more modular and optimized. **If you're not familiar with the concept of modularization, you can look at the [Official Documentation | Modules](https://esx-framework.github.io/es_extended2/modules/)**
+ESX Reborn is a replacment for the deprecated ESX v1 FiveM framework. Version 2 aims to create a framework that is more modular and optimized. **If you're not familiar with the concept of modularization, you can look at the [Official Documentation | Modules](https://wiki.esx-framework.org/esx-reborn2/modules/)**
 
 ## How Can I Contribute?
 
