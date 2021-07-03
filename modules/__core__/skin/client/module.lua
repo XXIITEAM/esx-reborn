@@ -7,7 +7,7 @@
 --   You shall not use any piece of this software in a commercial product / service
 --   You shall not resell this software
 --   You shall not provide any facility to install this particular software in a commercial product / service
---   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
+--   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
 M('events')
@@ -39,7 +39,7 @@ module.Defaults = {
   -- Right Menu
   blemishes = 0, freckles = 0, complexion = 0, blush = 0, blushColor = 0, blemishesOpacity = 0, frecklesOpacity = 0,
   complexionOpacity = 0, blushOpacity = 0, hair = 2, hairColor = 1, hairHighlightColor = 0, beard = 0, beardColor = 0,
-  beardOpacity = 0, makeup = 0, lipstick = 0, lipstickColor = 0, makeupOpacity = 0, lipstickOpacity = 0, aging = 0,
+  beardOpacity = 0, makeup = 0, lipstick = 0, makeupColor = 0, lipstickColor = 0, makeupOpacity = 0, lipstickOpacity = 0, aging = 0,
   agingOpacity = 0, chesthair = 0, chesthairColor = 0, chesthairOpacity = 0, sunDamage = 0, bodyBlemishes = 0,
   moreBodyBlemishes = 0, sunDamageOpacity = 0, bodyBlemishesOpacity = 0, moreBodyBlemishesOpacity = 0,
   components = {
@@ -69,6 +69,7 @@ module.Init = function()
   module.Frame:postMessage({
     type = "initData",
     hairColors = module.GetColorData(module.GetHairColors(), true),
+    makeupColors = module.GetColorData(module.GetMakeupColors(), false),
     lipstickColors = module.GetColorData(module.GetLipstickColors(), false),
     blushColors = module.GetColorData(module.GetBlushColors(), false),
     humanPeds = #module.Humans - 1,
@@ -269,6 +270,7 @@ module.LoadSkin = function(skin, hasSkin)
       SetPedHairColor(PlayerPedId(), skin.hairColor, skin.hairHighlightColor)
       SetPedHeadOverlayColor(PlayerPedId(), 1, 1, skin.beardColor, 0)
       SetPedHeadOverlayColor(PlayerPedId(), 2, 1, skin.eyebrowColor, 0)
+      SetPedHeadOverlayColor(PlayerPedId(), 4, 2, skin.makeupColor, 0)
       SetPedHeadOverlayColor(PlayerPedId(), 5, 2, skin.blushColor, 0)
       SetPedHeadOverlayColor(PlayerPedId(), 8, 2, skin.lipstickColor, 0)
       SetPedHeadOverlayColor(PlayerPedId(), 10, 1, skin.chesthairColor, 0)
@@ -346,6 +348,7 @@ module.UpdateSkin = function(skin)
     SetPedHairColor(PlayerPedId(), skin.hairColor, skin.hairHighlightColor)
     SetPedHeadOverlayColor(PlayerPedId(), 1, 1, skin.beardColor, 0)
     SetPedHeadOverlayColor(PlayerPedId(), 2, 1, skin.eyebrowColor, 0)
+    SetPedHeadOverlayColor(PlayerPedId(), 4, 2, skin.makeupColor, 0)
     SetPedHeadOverlayColor(PlayerPedId(), 5, 2, skin.blushColor, 0)
     SetPedHeadOverlayColor(PlayerPedId(), 8, 2, skin.lipstickColor, 0)
     SetPedHeadOverlayColor(PlayerPedId(), 10, 1, skin.chesthairColor, 0)
@@ -458,6 +461,17 @@ module.GetLipstickColors = function()
   table.insert(result, 56)
   table.insert(result, 62)
   table.insert(result, 63)
+
+  return result
+end
+
+module.GetMakeupColors = function()
+  local result = {}
+  local i = 0
+
+  for i = 0, 63 do
+      table.insert(result, i)
+  end
 
   return result
 end

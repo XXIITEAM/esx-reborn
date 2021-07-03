@@ -18,6 +18,7 @@
 
 - An installed MariaDB server (we will not support MySQL).
 - [ghmattimysql by GHMatti](https://github.com/GHMatti/ghmattimysql/releases/tag/1.3.2)
+- [external_handler by ESXCrackhead](https://github.com/ESXCrackhead/external_handler)
 - [Node.Js 10+](https://nodejs.org/en/)
 
 ### How to Install:
@@ -48,6 +49,7 @@ ensure yarn
 
 ensure ghmattimysql
 ensure cron
+ensure external_handler
 
 ensure esx-reborn # Will now auto-generate fxmanifest.lua to prevent platform-dependant behavior, will prompt you to type ensure esx-reborn in console when fxmanifest has changed. To save some typing, uncomment below lines
 
@@ -119,11 +121,31 @@ Another thing is the performance, so far, it's more optimized to work this way.
 
 ## Module Examples <a name="examples"></a>
 
-### [How to create and use menus <a name="examples-menu"></a>](https://github.com/ESX-Framework/esx-reborn/tree/develop/modules/__examples__/menu/)
+### [How to create and use menus <a name="examples-menu"></a>](https://github.com/ESX-Framework/esx-reborn/tree/main/modules/__examples__/menu/)
 
 ![Menu](https://i.snipboard.io/tF8AcT.jpg)
 
-### [How to create basic command <a name="examples-command"></a>](https://github.com/ESX-Framework/esx-reborn/tree/develop/modules/__examples__/commands/)
+### [How to create basic command <a name="examples-command"></a>](https://github.com/ESX-Framework/esx-reborn/tree/main/modules/__examples__/commands/)
+
+### How to add a new discord webhook and edit discord webhooks
+Go to your module and open server\main.lua. Paste this in there: 
+```
+function sendLogs (message,webhook)
+  if message == nil or message == '' then return FALSE end
+  PerformHttpRequest(webhook, function(err, text, headers) end, 'POST', json.encode({ content = message }), { ['Content-Type'] = 'application/json' })
+end
+
+
+onServer('toDiscord', function(message, webhook)
+sendLogs(message , webhook)
+end)
+```
+Now, go to your client files and add this in the places you want it.
+```
+emitServer('toDiscord', 'The text you want '..optional, a function.. '', 'Paste your discord webhook in here.')
+```
+If you want do delete the logs, delete the lines above in your code. 
+
 
 ### More to come...
 

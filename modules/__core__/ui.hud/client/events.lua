@@ -7,11 +7,12 @@
 --   You shall not use any piece of this software in a commercial product / service
 --   You shall not resell this software
 --   You shall not provide any facility to install this particular software in a commercial product / service
---   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
+--   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
 M('events')
 
+local frameDebugModeEnabled = GetConvarInt('esx-iframeDebug', 0) == 1
 local chunks = {}
 
 RegisterNUICallback('__chunk', function(data, cb)
@@ -29,10 +30,11 @@ RegisterNUICallback('__chunk', function(data, cb)
 
 end)
 
-RegisterNUICallback('nui_ready', function(data, cb)
+RegisterNUICallback('nui_ready', function(_, cb)
   module.Ready = true
   emit('esx:nui:ready')
-  cb('')
+
+  cb(frameDebugModeEnabled)
 end)
 
 RegisterNUICallback('frame_load', function(data, cb)
@@ -41,7 +43,7 @@ RegisterNUICallback('frame_load', function(data, cb)
 end)
 
 RegisterNUICallback('frame_message', function(data, cb)
-  
+
   local subscribed = false
 
   emit('esx:frame:message', data.name, data.msg, function()
@@ -56,7 +58,7 @@ RegisterNUICallback('frame_message', function(data, cb)
 end)
 
 on('esx:frame:load', function(name)
-  
+
   local frame = module.Frames[name]
 
   if frame == nil then

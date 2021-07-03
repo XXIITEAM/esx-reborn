@@ -7,19 +7,22 @@
 --   You shall not use any piece of this software in a commercial product / service
 --   You shall not resell this software
 --   You shall not provide any facility to install this particular software in a commercial product / service
---   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
+--   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
 Config = {}
 
-Config.EnableControls = true
-
-Config.DrawDistance = 20
--- Config.Size   = {x = 1.5, y = 1.5, z = 1.0}
--- Config.Color  = {r = 102, g = 102, b = 204, a = 100}
--- Config.Type   = 1
-
-Config.TestDriveTime = 180
+Config.EnableControls      = true
+Config.DrawDistance        = 20
+Config.TestDriveTime       = 180
+Config.EnableVehicleStats  = true
+Config.FastestVehicleSpeed = 200 -- in MPH
+Config.FastestVehicleAccel = 0.5
+Config.MaxGears            = 8
+Config.MaxCapacity         = 8
+Config.PlateLetters        = 3
+Config.PlateNumbers        = 3
+Config.PlateUseSpace       = true
 
 Config.VehicleShopZones = {
   Main = {

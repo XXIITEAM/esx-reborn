@@ -8,7 +8,7 @@
    You shall not use any piece of this software in a commercial product / service
    You shall not resell this software
    You shall not provide any facility to install this particular software in a commercial product / service
-   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
+   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
    This copyright should appear in every part of the project code
 -->
 
@@ -152,66 +152,69 @@
 
 		<item class="title">{title}</item>
 
-		{#each _items as item, i}
+    <item-wrap>
 
-			{#if item.visible}
+      {#each _items as item, i}
 
-				{#if item.type === 'default' || item.type === 'button'}
-					<item class="{item.type === 'button' ? 'button' : ''}" on:click={e => onItemClick(e, item, i)}>{item.label}</item>
-				{/if}
+        {#if item.visible}
 
-				{#if item.type === 'slider'}
-					<item class="slider" on:click={e => onItemClick(e, item, i)} on:wheel={e => onSliderWheel(e, item, i)}>
-						<div class="label">{item.label}</div>
-						<div><input type="range" bind:value={item.value} min={item.min} max={item.max}></div>
-					</item>
-				{/if}
+          {#if item.type === 'default' || item.type === 'button'}
+            <item class="{item.type === 'button' ? 'button' : ''}" on:click={e => onItemClick(e, item, i)}>{item.label}</item>
+          {/if}
 
-				{#if item.type === 'check'}
-					<item class="check" on:click={e => {onItemClick(e, item, i); item.value = !item.value}} >
-						<span class="label">{item.label}</span> <input type="checkbox" bind:checked={item.value}/>
-					</item>
-				{/if}
+          {#if item.type === 'slider'}
+            <item class="slider" on:click={e => onItemClick(e, item, i)} on:wheel={e => onSliderWheel(e, item, i)}>
+              <div class="label">{item.label}</div>
+              <div><input type="range" bind:value={item.value} min={item.min} max={item.max}></div>
+            </item>
+          {/if}
 
-				{#if item.type === 'text'}
-					<item class="text" on:click={e => onItemClick(e, item, i)}>
-						<div class="label">{item.label}</div>
-						<div><input type="text" bind:value={item.value} placeholder={item.placeholder || ''} autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/></div>
-					</item>
-				{/if}
+          {#if item.type === 'check'}
+            <item class="check" on:click={e => {onItemClick(e, item, i); item.value = !item.value}} >
+              <span class="label">{item.label}</span> <input type="checkbox" bind:checked={item.value}/>
+            </item>
+          {/if}
 
-				{#if item.type === 'color'}
-					<item class="color" on:click={e => onItemClick(e, item, i)}>
+          {#if item.type === 'text'}
+            <item class="text" on:click={e => onItemClick(e, item, i)}>
+              <div class="label">{item.label}</div>
+              <div><input type="text" bind:value={item.value} placeholder={item.placeholder || ''} autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/></div>
+            </item>
+          {/if}
 
-            <div class="label">{item.label}</div>
+          {#if item.type === 'color'}
+            <item class="color" on:click={e => onItemClick(e, item, i)}>
 
-            {#if !item.restrict}
-              <div class="color-picker">
-                <HsvPicker on:colorChange={rgba => onPicker(item, rgba.detail)} startColor={item.value ? (typeof item.value == 'string' ? item.value : '#' + rgbHex(item.value.r || 0, item.value.g || 0, item.value.b || 0)) : undefined}/>
-              </div>
-            {/if}
+              <div class="label">{item.label}</div>
 
-            {#if item.restrict instanceof Array}
-              <div class="color-restrict-preview">
-                <div class="color-restrict-entry">
-                  <div class="color-restrict-preview" style="background-color: {item.value ? (typeof item.value == 'string' ? item.value : '#' + rgbHex(item.value.r, item.value.g, item.value.b, item.value.a)) : 'transparent'}"></div>
+              {#if !item.restrict}
+                <div class="color-picker">
+                  <HsvPicker on:colorChange={rgba => onPicker(item, rgba.detail)} startColor={item.value ? (typeof item.value == 'string' ? item.value : '#' + rgbHex(item.value.r || 0, item.value.g || 0, item.value.b || 0)) : undefined}/>
                 </div>
-              </div>
-              <div class="color-restrict">
-                {#each item.restrict as color}
+              {/if}
+
+              {#if item.restrict instanceof Array}
+                <div class="color-restrict-preview">
                   <div class="color-restrict-entry">
-                    <div class="color-restrict-entry-inner" on:click={e => onPicker(item, color)} style="background-color: {typeof color == 'string' ? color : '#' + rgbHex(color.r || 0, color.g || 0, color.b || 0)}"></div>
+                    <div class="color-restrict-preview" style="background-color: {item.value ? (typeof item.value == 'string' ? item.value : '#' + rgbHex(item.value.r, item.value.g, item.value.b, item.value.a)) : 'transparent'}"></div>
                   </div>
-                {/each}
-              </div>
-            {/if}
+                </div>
+                <div class="color-restrict">
+                  {#each item.restrict as color}
+                    <div class="color-restrict-entry">
+                      <div class="color-restrict-entry-inner" on:click={e => onPicker(item, color)} style="background-color: {typeof color == 'string' ? color : '#' + rgbHex(color.r || 0, color.g || 0, color.b || 0)}"></div>
+                    </div>
+                  {/each}
+                </div>
+              {/if}
 
-					</item>
-				{/if}
+            </item>
+          {/if}
 
-			{/if}
+        {/if}
 
-		{/each}
+      {/each}
+    </item-wrap>
 	</main-wrap>
 </main>
 
@@ -230,21 +233,33 @@
     width: 320px;
     max-width: calc(100vh - 50px);
     max-height: 50vh;
-    overflow-y: auto;
+    overflow-y: hidden;
   }
 
-	main > main-wrap::-webkit-scrollbar-track {
+  main-wrap > item-wrap {
+    display: flex;
+		border-left: 0;
+		font-size: 1.1em;
+		user-select: none;
+		flex-direction: column;
+		border-radius: 10px;
+    overflow-y: auto;
+    max-height: calc(50vh - 50px);
+    width: 100%;
+  }
+
+	main-wrap > item-wrap::-webkit-scrollbar-track {
 		box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 		border-radius: 10px;
 		background-color: rgba(0,0,0,.1);
 	}
 
-	main > main-wrap::-webkit-scrollbar {
+	main-wrap > item-wrap::-webkit-scrollbar {
 		width: 10px;
 		background-color: transparent;
 	}
 
-	main > main-wrap::-webkit-scrollbar-thumb {
+	main-wrap > item-wrap::-webkit-scrollbar-thumb {
 		border-radius: 10px;
 		background-color: rgba(54, 54, 54, 0.75);
 	}

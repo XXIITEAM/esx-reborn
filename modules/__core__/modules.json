@@ -2,6 +2,7 @@
     "account",
     "async",
     "admin",
+    "atm",
     "cache",
     "class",
     "camera",
@@ -13,10 +14,10 @@
     "identity",
     "input",
     "interact",
-    "inventory",
+    "interactions",
+    "license",
     "math",
     "migrate",
-    "owned.vehicles",
     "persistent",
     "player",
     "role",
@@ -30,5 +31,6 @@
     "ui.menu",
     "utils",
     "vehicles",
+    "vending",
     "connect"
 ]

@@ -7,7 +7,7 @@
 --   You shall not use any piece of this software in a commercial product / service
 --   You shall not resell this software
 --   You shall not provide any facility to install this particular software in a commercial product / service
---   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/ESX-Org/esx-reborn
+--   If you redistribute this software, you must link to ORIGINAL repository at https://github.com/esx-framework/esx-reborn
 --   This copyright should appear in every part of the project code
 
 M('table')
@@ -31,7 +31,8 @@ Identity.define({
   {name = 'roles',      field = {name = 'roles',      type = 'MEDIUMTEXT', length = nil, default = '[]',                  extra = nil}, encode = json.encode, decode = json.decode},
   {name = 'status',     field = {name = 'status',     type = 'VARCHAR',    length = 999, default = json.encode(status),   extra = nil}, encode = json.encode, decode = json.decode},
   {name = 'health',     field = {name = 'health',     type = 'INT',        length = nil, default = 200,                   extra = 'NOT NULL'}, encode = json.encode, decode = json.decode},
-  {name = 'accounts',   field = {name = 'accounts',   type = 'VARCHAR',    length = 255, default = json.encode(accounts), extra = nil}, encode = json.encode, decode = json.decode}
+  {name = 'accounts',   field = {name = 'accounts',   type = 'VARCHAR',    length = 255, default = json.encode(accounts), extra = nil}, encode = json.encode, decode = json.decode},
+  {name = 'licenses',   field = {name = 'licenses',   type = 'MEDIUMTEXT', length = nil, default = json.encode({}),       extra = nil}, encode = json.encode, decode = json.decode}
 })
 
 Identity.all = setmetatable({}, {
@@ -83,6 +84,9 @@ function Identity.loadForPlayer(identity, player)
 
   -- Construct status from serialized status
   identity:field('status', Status(identity:getStatus()), status)
+
+  -- Construct licenses from serialized licenses
+  identity:field('licenses', Licenses(identity:getLicenses(), player.source))
 
   player:setIdentityId(identity:getId())
   player:field('identity', identity)
